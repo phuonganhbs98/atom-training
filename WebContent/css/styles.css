@@ -1,0 +1,56 @@
+.error_message {
+	font-weight: 500;
+	font-size: 40px;
+	color: red;
+	letter-spacing: 5.5px;
+}
+
+#login_form {
+	/* width: 300px; */
+	padding: 20px;
+	margin-top: 10px;
+	margin-right: auto;
+	margin-bottom: 10px;
+	margin-left: auto;
+}
+
+.title {
+	/* color: black; */
+	margin-left: 8%;
+	margin-bottom: 5%;
+	letter-spacing: 5.5px;
+	font-size: 40px;
+	font-weight: 500;
+}
+
+.login-input {
+	text-align: left;
+	padding-left: 5%;
+}
+
+.login-label {
+	text-align: left;
+	width: 30%;
+}
+
+.hide {
+	visibility: hidden;
+}
+
+.show {
+	visibility: visible;
+}
+
+.main-btn{
+	padding: 3px 30px;
+    background-color: white;
+    border: 1px solid;
+    border-radius: 5px;
+    letter-spacing: 2.5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.login-btn{
+	margin-top: 3%;
+}
