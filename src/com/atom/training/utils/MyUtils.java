@@ -35,6 +35,10 @@ public class MyUtils {
 		session.setAttribute("loginedUser", loginedUser);
 	}
 
+	public static void removeLoginedUser(HttpSession session) {
+		session.removeAttribute("loginedUser");
+	}
+
 	// Lấy thông tin người dùng lưu trữ trong Session.
 	public static User getLoginedUser(HttpSession session) {
 		User loginedUser = (User) session.getAttribute("loginedUser");

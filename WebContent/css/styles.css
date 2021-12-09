@@ -14,10 +14,11 @@
 	margin-left: auto;
 }
 
+.content {
+	margin: 0 5%;
+}
+
 .title {
-	/* color: black; */
-	margin-left: 8%;
-	margin-bottom: 5%;
 	letter-spacing: 5.5px;
 	font-size: 40px;
 	font-weight: 500;
@@ -41,16 +42,66 @@
 	visibility: visible;
 }
 
-.main-btn{
-	padding: 3px 30px;
-    background-color: white;
-    border: 1px solid;
-    border-radius: 5px;
-    letter-spacing: 2.5px;
-    font-size: 20px;
-    cursor: pointer;
+.main-btn {
+	/* 	padding: 3px 30px; */
+	width: 150px;
+	background-color: white;
+	border: 1px solid;
+	border-radius: 5px;
+	letter-spacing: 2.5px;
+	font-size: 20px;
+	cursor: pointer;
+	height: 34px;
 }
 
-.login-btn{
+.login-btn {
 	margin-top: 3%;
+}
+
+.flex-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.link>a {
+	margin: 10px;
+	padding: 20px;
+	font-size: 18px;
+}
+
+.search-form {
+	justify-content: flex-start;
+}
+
+input {
+	height: 26px;
+	margin-bottom: 10px;
+}
+
+.search-btn-group {
+	justify-content: flex-end;
+	padding: 0 20px;
+}
+
+.search-btn-group>input {
+	margin: 0 10px;
+}
+
+.label-search-fm {
+	width: 20%;
+}
+
+#user-list {
+	border-collapse: collapse;
+	width: 100%;
+	text-align: left;
+	margin-top: 20px;
+}
+
+#user-list td, #user-list th {
+	border: 1px solid #000;
+	padding: 8px;
 }

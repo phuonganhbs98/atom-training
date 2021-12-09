@@ -9,7 +9,7 @@
 <link href="./css/styles.css" rel="stylesheet" type="text/css">
 
 </head>
-<body>
+<body class="content">
 	<jsp:include page="_title.jsp">
 		<jsp:param name="title" value="login" />
 	</jsp:include>

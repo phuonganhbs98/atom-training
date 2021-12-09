@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.atom.training.beans.User;
-import com.atom.training.utils.DBUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
+import com.atom.training.utils.UserUtils;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -27,18 +27,12 @@ public class LoginServlet extends HttpServlet {
 
 		// TODO: 以下はサンプルです。課題とは無関係の処理です。
 		HttpSession session = request.getSession();
-		// Kiểm tra người dùng đã đăng nhập (login) chưa.
 		User loginedUser = MyUtils.getLoginedUser(session);
 		if (loginedUser != null) {
-			request.setAttribute("userId", loginedUser.getFirstName());
-			request.setAttribute("userName", loginedUser.getFamilyName());
-			RequestDispatcher dispatcher //
-					= this.getServletContext().getRequestDispatcher(jspPath +"userInfor.jsp");
-
-			dispatcher.forward(request, response);
+			response.sendRedirect(request.getContextPath() + "/users");
 		} else {
 			RequestDispatcher dispatcher //
-					= this.getServletContext().getRequestDispatcher(jspPath +"login.jsp");
+					= this.getServletContext().getRequestDispatcher(jspPath + "login.jsp");
 
 			dispatcher.forward(request, response);
 		}
@@ -48,7 +42,6 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		//		doGet(request, response);
 		String userName = request.getParameter("userID");
 		String password = request.getParameter("password");
 
@@ -63,7 +56,7 @@ public class LoginServlet extends HttpServlet {
 			Connection conn = MyUtils.getStoredConnection(request);
 			try {
 				// Tìm user trong DB.
-				user = DBUtils.findUser(conn, userName, password);
+				user = UserUtils.findUser(conn, userName, password);
 
 				if (user == null) {
 					hasError = true;
@@ -88,19 +81,19 @@ public class LoginServlet extends HttpServlet {
 			request.setAttribute("user", user);
 
 			RequestDispatcher dispatcher //
-					= this.getServletContext().getRequestDispatcher(jspPath +"login.jsp");
+					= this.getServletContext().getRequestDispatcher(jspPath + "login.jsp");
 
 			dispatcher.forward(request, response);
-		}
-		else {
+		} else {
 			HttpSession session = request.getSession();
 			MyUtils.storeLoginedUser(session, user);
-			request.setAttribute("firstName", user.getFirstName());
-			request.setAttribute("familyName", user.getFamilyName());
-			RequestDispatcher dispatcher //
-					= this.getServletContext().getRequestDispatcher(jspPath +"userInfor.jsp");
-
-			dispatcher.forward(request, response);
+			//			request.setAttribute("firstName", user.getFirstName());
+			//			request.setAttribute("familyName", user.getFamilyName());
+			//			RequestDispatcher dispatcher //
+			//					= this.getServletContext().getRequestDispatcher(jspPath + "userInfor.jsp");
+			//
+			//			dispatcher.forward(request, response);
+			response.sendRedirect(request.getContextPath() + "/users");
 		}
 
 	}
