@@ -16,12 +16,20 @@ public class MyUtils {
 
 	private static final String ATT_NAME_USER_NAME = "ATTRIBUTE_FOR_STORE_USER_NAME_IN_COOKIE";
 
-	public static void storeConnection(ServletRequest request, Connection conn) {
-		request.setAttribute(ATT_NAME_CONNECTION, conn);
-	}
+//	public static Connection storeConnection(ServletRequest request) {
+//		Connection conn = null;
+//		try {
+//			conn = ConnectionUtils.getConnection();
+//			request.setAttribute(ATT_NAME_CONNECTION, conn);
+//			return conn;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//
+//	}
 
 	public static Connection getStoredConnection(ServletRequest request) {
-		//		Connection conn = (Connection) request.getAttribute(ATT_NAME_CONNECTION);
 		Connection conn = null;
 		try {
 			conn = ConnectionUtils.getConnection();
@@ -29,6 +37,16 @@ public class MyUtils {
 			e.printStackTrace();
 		}
 		return conn;
+	}
+
+	public static void closeConnection(Connection conn) {
+		/*try {
+			conn.commit();
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}*/
+		ConnectionUtils.closeQuietly(conn);
 	}
 
 	public static void storeLoginedUser(HttpSession session, User loginedUser) {

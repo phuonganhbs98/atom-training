@@ -31,8 +31,71 @@ public class UserUtils {
 		return null;
 	}
 
+	public static List<User> search(Connection conn, //
+			User u) throws SQLException {
+
+		String sql = "SELECT U.USER_ID,\r\n" +
+				"	U.PASSWORD,\r\n" +
+				"	U.FAMILY_NAME,\r\n" +
+				"	U.FIRST_NAME,\r\n" +
+				"	U.GENDER_ID,\r\n" +
+				"	(SELECT G.GENDER_NAME\r\n" +
+				"		FROM MST_GENDER G\r\n" +
+				"		WHERE G.GENDER_ID = U.GENDER_ID) GENDER_NAME,\r\n" +
+				"	U.AGE,\r\n" +
+				"	U.AUTHORITY_ID,\r\n" +
+				"	(SELECT R.AUTHORITY_NAME\r\n" +
+				"		FROM MST_ROLE R\r\n" +
+				"		WHERE R.AUTHORITY_ID = U.AUTHORITY_ID) ROLE_NAME,\r\n" +
+				"	U.ADMIN " +
+				"FROM MST_USER U\r\n" +
+				"WHERE U.FAMILY_NAME like ?\r\n" +
+				"	AND U.FIRST_NAME like ?\r\n";
+		if (u.getAuthorityId() != null) {
+			sql = sql + "	AND U.AUTHORITY_ID = ?";
+		}
+
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, "%" + u.getFamilyName() + "%");
+		pstm.setString(2, "%" + u.getFirstName() + "%");
+		if (u.getAuthorityId() != null) {
+			pstm.setInt(3, u.getAuthorityId());
+		}
+		ResultSet rs = pstm.executeQuery();
+		List<User> result = new ArrayList<>();
+		while (rs.next()) {
+			User user = new User();
+			user.setUserId(rs.getString("user_id"));
+			user.setPassword(rs.getString("password"));
+			user.setFirstName(rs.getString("first_name"));
+			user.setFamilyName(rs.getString("family_name"));
+			user.setGenderId(rs.getInt("gender_id"));
+			user.setGenderName(rs.getString("gender_name"));
+			user.setAge(rs.getInt("age"));
+			user.setAuthorityId(rs.getInt("authority_id"));
+			user.setRoleName(rs.getString("role_name"));
+			user.setAdmin(rs.getInt("admin"));
+			result.add(user);
+		}
+		return result;
+	}
+
 	public static List<User> findAllUsers(Connection conn) throws SQLException {
-		String sql = "Select * from mst_user ";
+		String sql = "SELECT U.USER_ID,\r\n" +
+				"	U.PASSWORD,\r\n" +
+				"	U.FAMILY_NAME,\r\n" +
+				"	U.FIRST_NAME,\r\n" +
+				"	U.GENDER_ID,\r\n" +
+				"	(SELECT G.GENDER_NAME\r\n" +
+				"		FROM MST_GENDER G\r\n" +
+				"		WHERE G.GENDER_ID = U.GENDER_ID) GENDER_NAME,\r\n" +
+				"	U.AGE,\r\n" +
+				"	U.AUTHORITY_ID,\r\n" +
+				"	(SELECT R.AUTHORITY_NAME\r\n" +
+				"		FROM MST_ROLE R\r\n" +
+				"		WHERE R.AUTHORITY_ID = U.AUTHORITY_ID) ROLE_NAME,\r\n" +
+				"	U.ADMIN " +
+				"FROM MST_USER U";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 
@@ -45,11 +108,24 @@ public class UserUtils {
 			u.setFamilyName(rs.getString("family_name"));
 			u.setFirstName(rs.getString("first_name"));
 			u.setGenderId(rs.getInt("gender_id"));
+			u.setGenderName(rs.getString("gender_name"));
 			u.setAge(rs.getInt("age"));
 			u.setAuthorityId(rs.getInt("authority_id"));
+			u.setRoleName(rs.getString("role_name"));
+			u.setAdmin(rs.getInt("admin"));
 			list.add(u);
 		}
 		return list;
+	}
+
+	public static void deleteUser(Connection conn, String userId) throws SQLException {
+		String sql = "Delete From MST_USER WHERE USER_ID= ?";
+
+		PreparedStatement pstm = conn.prepareStatement(sql);
+
+		pstm.setString(1, userId);
+
+		pstm.executeUpdate();
 	}
 
 }

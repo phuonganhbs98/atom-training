@@ -57,7 +57,7 @@ public class LoginServlet extends HttpServlet {
 			try {
 				// Tìm user trong DB.
 				user = UserUtils.findUser(conn, userName, password);
-
+				MyUtils.closeConnection(conn);
 				if (user == null) {
 					hasError = true;
 					errorString = "ログインに失敗しました。";
@@ -87,12 +87,6 @@ public class LoginServlet extends HttpServlet {
 		} else {
 			HttpSession session = request.getSession();
 			MyUtils.storeLoginedUser(session, user);
-			//			request.setAttribute("firstName", user.getFirstName());
-			//			request.setAttribute("familyName", user.getFamilyName());
-			//			RequestDispatcher dispatcher //
-			//					= this.getServletContext().getRequestDispatcher(jspPath + "userInfor.jsp");
-			//
-			//			dispatcher.forward(request, response);
 			response.sendRedirect(request.getContextPath() + "/users");
 		}
 

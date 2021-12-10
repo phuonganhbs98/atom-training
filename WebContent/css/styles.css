@@ -43,7 +43,6 @@
 }
 
 .main-btn {
-	/* 	padding: 3px 30px; */
 	width: 150px;
 	background-color: white;
 	border: 1px solid;
@@ -81,6 +80,11 @@ input {
 	margin-bottom: 10px;
 }
 
+select {
+	width: 170px;
+	height: 32px;
+}
+
 .search-btn-group {
 	justify-content: flex-end;
 	padding: 0 20px;
@@ -104,4 +108,11 @@ input {
 #user-list td, #user-list th {
 	border: 1px solid #000;
 	padding: 8px;
+}
+
+.small-btn {
+	width: 100px;
+	color: black;
+	text-decoration: none;
+	text-align: center;
 }

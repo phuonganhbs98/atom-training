@@ -1,21 +1,48 @@
 package com.atom.training.beans;
 
 public class User {
-	public String userId;
-	public String password;
-	public String familyName;
-	public String firstName;
-	public Integer genderId;
-	public Integer age;
-	public Integer authorityId;
-	public Integer admin;
-	public String createUserId;
-	public String updateUserId;
-	public Long createDate;
-	public Long updateDate;
+	private String userId;
+	private String password;
+	private String familyName;
+	private String firstName;
+	private Integer genderId;
+	private String genderName;
+	private Integer age;
+	private Integer authorityId;
+	private String roleName;
+	private Integer admin;
+	private String createUserId;
+	private String updateUserId;
+	private Long createDate;
+	private Long updateDate;
 
 	public User() {
 		super();
+	}
+
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", password=" + password + ", familyName=" + familyName + ", firstName="
+				+ firstName + ", genderId=" + genderId + ", genderName=" + genderName + ", age=" + age
+				+ ", authorityId=" + authorityId + ", roleName=" + roleName + ", admin=" + admin + ", createUserId="
+				+ createUserId + ", updateUserId=" + updateUserId + ", createDate=" + createDate + ", updateDate="
+				+ updateDate + "]";
+	}
+
+	public String getGenderName() {
+		return genderName;
+	}
+
+	public void setGenderName(String genderName) {
+		this.genderName = genderName;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 
 	public String getUserId() {
