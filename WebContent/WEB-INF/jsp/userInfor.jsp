@@ -9,7 +9,6 @@
 <link href="./css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body class="content">
-	<%!int i = 0;%>
 	<jsp:include page="_title.jsp">
 		<jsp:param name="title" value="list" />
 	</jsp:include>
@@ -46,7 +45,7 @@
 			</div>
 		</div>
 	</form>
-	<table id="user-list">
+	<table class="user-list">
 		<tr>
 			<th>No</th>
 			<th>ユーザID</th>
@@ -54,8 +53,10 @@
 			<th>性別</th>
 			<th>年齢</th>
 			<th>役職</th>
-			<th style="text-align: center; width: 230px"><button
-					class="main-btn">登録</button></th>
+			<th style="text-align: center; width: 230px"><a
+					class="main-btn" href="/traning/users/signup"
+					type="button" style="padding: 0 50px;"
+					>登録</a></th>
 		</tr>
 
 		<c:forEach items="${users}" var="user" varStatus="loop">
@@ -68,7 +69,7 @@
 				<td style="width: 15%"><c:if test="${user.admin==1}">★</c:if>
 					${user.roleName}</td>
 				<td class="flex-container" style="width: 230px">
-					<button class="small-btn main-btn">更新</button> |
+					<a href="/traning/users/edit?userId=${user.userId }"  type="button" class="small-btn main-btn">更新</a> |
 					<a href="/traning/users/delete?userId=${user.userId }" type="button" class=" small-btn main-btn">削除</a>
 				</td>
 			</tr>
