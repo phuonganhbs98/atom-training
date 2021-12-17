@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +20,7 @@ import com.atom.training.utils.UserUtils;
 @WebServlet("/users/delete")
 public class DeleteUserServlet  extends HttpServlet{
 	private static final String jspPath = Prop.getPropValue("jspPath");
+	public static User currentUser;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -26,6 +28,28 @@ public class DeleteUserServlet  extends HttpServlet{
 		Connection conn = MyUtils.getStoredConnection(request);
 		try {
 			String userId = request.getParameter("userId");
+			User u = UserUtils.findByUserId(conn, userId);
+			this.currentUser = u;
+			request.setAttribute("user", u);
+//			UserUtils.deleteUser(conn, userId);
+			/*List<User> users = UserUtils.findAllUsers(conn);
+			List<Role> roles = RoleUtils.findAllRoles(conn);*/
+			MyUtils.closeConnection(conn);
+			RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "confirmDelete.jsp");
+			dispatcher.forward(request, response);
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		Connection conn = MyUtils.getStoredConnection(request);
+		try {
+			/*String userId = request.getParameter("userId");*/
+			String userId = this.currentUser.getUserId();
 			UserUtils.deleteUser(conn, userId);
 			List<User> users = UserUtils.findAllUsers(conn);
 			List<Role> roles = RoleUtils.findAllRoles(conn);

@@ -12,6 +12,7 @@
 					<c:when test="${param.title=='edit'}">更新</c:when>
 					<c:when test="${param.title=='statistic'}">役職別集計</c:when>
 					<c:when test="${param.title=='finish'}">${param.type }完了</c:when>
+					<c:when test="${param.title=='delete'}">削除</c:when>
 					<c:otherwise>タイトル</c:otherwise>
 				</c:choose>
 			</p>

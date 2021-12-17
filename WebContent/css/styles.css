@@ -66,6 +66,7 @@
 	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: baseline;
+	padding: 0 3% 0 0;
 }
 
 .link>a {
@@ -158,5 +159,9 @@ select {
 
 .modal-body {
 	padding: 2px 16px;
+	text-align: center;
+}
+
+.statistic th, .statistic td{
 	text-align: center;
 }

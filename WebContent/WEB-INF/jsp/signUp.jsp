@@ -28,7 +28,7 @@
 					<tr>
 						<td class="login-label">ユーザID：</td>
 						<td class="login-input"><input type="text" name="userId"
-							value="${user.userId }" maxlength="8" ${ edit?"disabled":""}></td>
+							value="${user.userId }" maxlength="8" ${ edit?"readonly":""}></td>
 					</tr>
 					<tr>
 						<td class="login-label">姓：</td>
