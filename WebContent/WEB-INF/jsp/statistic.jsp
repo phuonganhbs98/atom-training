@@ -20,14 +20,14 @@
 			<tr>
 				<th style="text-align: left">No</th>
 				<th style="text-align: left">役職</th>
-				<th>男の人数</th>
-				<th>女の人数</th>
-				<th style="color: red;">未登録の人数</th>
-				<th>年齢別人数<br /> (0-19)
+				<th class="width-10">男の人数</th>
+				<th class="width-10">女の人数</th>
+				<th style="color: red;" class="width-10">未登録<br />の人数</th>
+				<th class="width-15">年齢別人数<br /> (0-19)
 				</th>
-				<th>年齢別人数<br /> (20以上)
+				<th class="width-15">年齢別人数<br /> (20以上)
 				</th>
-				<th>年齢別人数<br /> (未登録)
+				<th class="width-15">年齢別人数<br /> (未登録)
 				</th>
 			</tr>
 			<c:forEach items="${result}" var="r" varStatus="loop">

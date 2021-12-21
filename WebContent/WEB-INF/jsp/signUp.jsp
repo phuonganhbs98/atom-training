@@ -38,10 +38,10 @@
 					<tr>
 						<td class="login-label">性別：</td>
 						<td class="login-input"><select name="gender">
-								<option value="" ></option>
+								<option value="" ${(user.genderId==null)? "selected":""} ></option>
 								<c:forEach items="${genders}" var="g" varStatus="loop">
 									<option value="${g.genderId}"
-										${user.genderId==g.genderId? "selected":""}>${g.genderName}</option>
+										${(user.genderId!=null&&user.genderId==g.genderId)? "selected":""}>${g.genderName}</option>
 								</c:forEach>
 						</select></td>
 					</tr>
@@ -51,7 +51,7 @@
 								<option value=""></option>
 								<c:forEach items="${roles}" var="r" varStatus="loop">
 									<option value="${r.authorityId }"
-										${user.authorityId==r.authorityId? "selected":""}>${r.authorityName}</option>
+										${(user.authorityId!=null&&user.authorityId==r.authorityId)? "selected":""}>${r.authorityName}</option>
 								</c:forEach>
 						</select></td>
 					</tr>

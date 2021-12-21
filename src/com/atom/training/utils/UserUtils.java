@@ -48,9 +48,12 @@ public class UserUtils {
 			user.setPassword(rs.getString("password"));
 			user.setFirstName(rs.getString("first_name"));
 			user.setFamilyName(rs.getString("family_name"));
-			user.setGenderId(rs.getInt("gender_id"));
-			user.setAge(rs.getInt("age"));
-			user.setAuthorityId(rs.getInt("authority_id"));
+			Object genderId = rs.getObject("gender_id");
+			user.setGenderId(genderId==null?null:(int)genderId);
+			Object age = rs.getObject("age");
+			user.setAge(age==null?null:(int)age);
+			Object authorityId = rs.getObject("authority_id");
+			user.setAuthorityId(authorityId==null?null:(int) authorityId);
 			user.setAdmin(rs.getInt("admin"));
 			return user;
 		}
@@ -76,10 +79,11 @@ public class UserUtils {
 				"	U.ADMIN " +
 				"FROM MST_USER U\r\n" +
 				"WHERE U.FAMILY_NAME like ?\r\n" +
-				"	AND U.FIRST_NAME like ?\r\n order by u.admin desc, u.user_id asc";
+				"	AND U.FIRST_NAME like ?\r\n ";
 		if (u.getAuthorityId() != null) {
 			sql = sql + "	AND U.AUTHORITY_ID = ?";
 		}
+		sql = sql + "order by u.admin desc, u.user_id asc";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, "%" + u.getFamilyName() + "%");
@@ -95,10 +99,14 @@ public class UserUtils {
 			user.setPassword(rs.getString("password"));
 			user.setFirstName(rs.getString("first_name"));
 			user.setFamilyName(rs.getString("family_name"));
-			user.setGenderId(rs.getInt("gender_id"));
+			/*user.setGenderId(rs.getInt("gender_id"));*/
 			user.setGenderName(rs.getString("gender_name"));
-			user.setAge(rs.getInt("age"));
-			user.setAuthorityId(rs.getInt("authority_id"));
+			Object genderId = rs.getObject("gender_id");
+			user.setGenderId(genderId==null?null:(int)genderId);
+			Object age = rs.getObject("age");
+			user.setAge(age==null?null:(int)age);
+			Object authorityId = rs.getObject("authority_id");
+			user.setAuthorityId(authorityId==null?null:(int) authorityId);
 			user.setRoleName(rs.getString("role_name"));
 			user.setAdmin(rs.getInt("admin"));
 			result.add(user);
@@ -133,10 +141,13 @@ public class UserUtils {
 			u.setPassword(rs.getString("password"));
 			u.setFamilyName(rs.getString("family_name"));
 			u.setFirstName(rs.getString("first_name"));
-			u.setGenderId(rs.getInt("gender_id"));
+			Object genderId = rs.getObject("gender_id");
+			u.setGenderId(genderId==null?null:(int)genderId);
+			Object age = rs.getObject("age");
+			u.setAge(age==null?null:(int)age);
+			Object authorityId = rs.getObject("authority_id");
+			u.setAuthorityId(authorityId==null?null:(int) authorityId);
 			u.setGenderName(rs.getString("gender_name"));
-			u.setAge(rs.getInt("age"));
-			u.setAuthorityId(rs.getInt("authority_id"));
 			u.setRoleName(rs.getString("role_name"));
 			u.setAdmin(rs.getInt("admin"));
 			list.add(u);
@@ -165,9 +176,9 @@ public class UserUtils {
 		pstm.setString(i++, u.getPassword());
 		pstm.setString(i++, u.getFamilyName());
 		pstm.setString(i++, u.getFirstName());
-		pstm.setInt(i++, u.getGenderId());
-		pstm.setInt(i++, u.getAge());
-		pstm.setInt(i++, u.getAuthorityId());
+		pstm.setObject(i++, u.getGenderId());
+		pstm.setObject(i++, u.getAge());
+		pstm.setObject(i++, u.getAuthorityId());
 		pstm.setInt(i++, u.getAdmin());
 		pstm.setString(i++, u.getCreateUserId());
 		pstm.setString(i++, u.getUpdateUserId());
@@ -186,9 +197,9 @@ public class UserUtils {
 		pstm.setString(i++, u.getPassword());
 		pstm.setString(i++, u.getFamilyName());
 		pstm.setString(i++, u.getFirstName());
-		pstm.setInt(i++, u.getGenderId());
-		pstm.setInt(i++, u.getAge());
-		pstm.setInt(i++, u.getAuthorityId());
+		pstm.setObject(i++, u.getGenderId());
+		pstm.setObject(i++, u.getAge());
+		pstm.setObject(i++, u.getAuthorityId());
 		pstm.setInt(i++, u.getAdmin());
 		pstm.setString(i++, u.getUpdateUserId());
 		pstm.setLong(i++, u.getUpdateDate());
@@ -196,5 +207,5 @@ public class UserUtils {
 
 		pstm.executeUpdate();
 	}
-	
+
 }

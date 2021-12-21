@@ -162,6 +162,14 @@ select {
 	text-align: center;
 }
 
-.statistic th, .statistic td{
+.statistic th, .statistic td {
 	text-align: center;
+}
+
+.width-10 {
+	width: 10%;
+}
+
+.width-15 {
+	width: 15%;
 }

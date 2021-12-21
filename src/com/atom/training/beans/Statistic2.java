@@ -33,6 +33,10 @@ public class Statistic2 {
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
+	@Override
+	public String toString() {
+		return "Statistic2 [authorityId=" + authorityId + ", authorityName=" + authorityName + ", total=" + total + "]";
+	}
 
 
 

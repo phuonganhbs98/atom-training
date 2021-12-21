@@ -11,7 +11,13 @@
 					<c:when test="${param.title=='signup'}">登録</c:when>
 					<c:when test="${param.title=='edit'}">更新</c:when>
 					<c:when test="${param.title=='statistic'}">役職別集計</c:when>
-					<c:when test="${param.title=='finish'}">${param.type }完了</c:when>
+					<c:when test="${param.title=='finish'}">
+						<c:choose>
+							<c:when test="${param.type=='signup' }">登録</c:when>
+							<c:when test="${param.type=='edit' }">更新</c:when>
+							<c:when test="${param.type=='delete' }">削除</c:when>
+						</c:choose>完了
+						</c:when>
 					<c:when test="${param.title=='delete'}">削除</c:when>
 					<c:otherwise>タイトル</c:otherwise>
 				</c:choose>

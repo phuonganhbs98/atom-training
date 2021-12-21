@@ -39,7 +39,7 @@ public class StatisticUtils {
 		statisticArr = statisticByAge(conn, true, null, 19);
 		assignResult(statisticArr, mapResult, "smaller19");
 		statisticArr = statisticByAge(conn, true, 20, null);
-		assignResult(statisticArr, mapResult, "greater19");
+		assignResult(statisticArr, mapResult, "greater20");
 		statisticArr = statisticByAge(conn, false, null, null);
 		assignResult(statisticArr, mapResult, "unknownAge");
 
@@ -92,13 +92,16 @@ public class StatisticUtils {
 			pstm.setInt(1, genderId);
 		}
 		ResultSet rs = pstm.executeQuery();
-		if (rs.next()) {
+		while (rs.next()) {
 			Statistic2 s = new Statistic2();
-			s.setAuthorityId(rs.getInt("authorityId"));
+			Object authorityId =rs.getObject("authorityId");
+			s.setAuthorityId(authorityId==null?null:(int) authorityId);
 			s.setTotal(rs.getInt("total"));
 			s.setAuthorityName(rs.getString("roleName"));
 			result.add(s);
 		}
+		result.forEach(x-> System.out.println(x.toString()));
+
 
 		return result;
 	}
@@ -134,9 +137,10 @@ public class StatisticUtils {
 		}
 
 		ResultSet rs = pstm.executeQuery();
-		if (rs.next()) {
+		while (rs.next()) {
 			Statistic2 s = new Statistic2();
-			s.setAuthorityId(rs.getInt("authorityId"));
+			Object authorityId =rs.getObject("authorityId");
+			s.setAuthorityId(authorityId==null?null:(int) authorityId);
 			s.setTotal(rs.getInt("total"));
 			result.add(s);
 		}
