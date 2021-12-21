@@ -11,11 +11,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.atom.training.beans.Gender;
 import com.atom.training.beans.Role;
 import com.atom.training.beans.User;
+import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.GenderUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
@@ -31,9 +31,11 @@ public class SignUpServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// TODO: 以下はサンプルです。課題とは無関係の処理です。
-		HttpSession session = request.getSession();
-		User loginedUser = MyUtils.getLoginedUser(session);
+		User loginedUser = CheckLoginUtils.checkLogin(request, response);
+		if (loginedUser == null) {
+			return;
+		}
+
 		Connection conn = MyUtils.getStoredConnection(request);
 		try {
 			List<Gender> genders = GenderUtils.findAllGenders(conn);
@@ -63,10 +65,8 @@ public class SignUpServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = MyUtils.getStoredConnection(request);
-		HttpSession session = request.getSession();
-		User loginedUser = MyUtils.getLoginedUser(session);
+		User loginedUser = CheckLoginUtils.checkLogin(request, response);
 		if (loginedUser == null) {
-			response.sendRedirect(request.getContextPath()+"/login");
 			return;
 		}
 
@@ -89,15 +89,7 @@ public class SignUpServlet extends HttpServlet {
 				errorString = "姓が未入力です。";
 			} else if (firstName == null || firstName == "") {
 				errorString = "名が未入力です。";
-			} else if (gender == null || gender == "") {
-				errorString = "性別が未入力です。";
-			} else if (age == null || age == "") {
-				errorString = "年齢が未入力です。";
-			} else if (role == null || role == "") {
-				errorString = "役職が未入力です。";
 			}
-
-			System.out.println("errorString: " + errorString);
 
 			user.setFirstName(firstName);
 			user.setFamilyName(familyName);

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.atom.training.beans.Role;
 import com.atom.training.beans.User;
+import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
 import com.atom.training.utils.RoleUtils;
@@ -25,15 +26,16 @@ public class DeleteUserServlet  extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Connection conn = MyUtils.getStoredConnection(request);
 		try {
+			User loginedUser = CheckLoginUtils.checkLogin(request, response);
+			if (loginedUser == null) {
+				return;
+			}
+			Connection conn = MyUtils.getStoredConnection(request);
 			String userId = request.getParameter("userId");
 			User u = UserUtils.findByUserId(conn, userId);
 			this.currentUser = u;
 			request.setAttribute("user", u);
-//			UserUtils.deleteUser(conn, userId);
-			/*List<User> users = UserUtils.findAllUsers(conn);
-			List<Role> roles = RoleUtils.findAllRoles(conn);*/
 			MyUtils.closeConnection(conn);
 			RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "confirmDelete.jsp");
 			dispatcher.forward(request, response);
@@ -54,7 +56,9 @@ public class DeleteUserServlet  extends HttpServlet{
 			List<User> users = UserUtils.findAllUsers(conn);
 			List<Role> roles = RoleUtils.findAllRoles(conn);
 			MyUtils.closeConnection(conn);
-			response.sendRedirect(request.getContextPath() + "/users");
+			request.setAttribute("title", "削除");
+			RequestDispatcher dispatcher= this.getServletContext().getRequestDispatcher(jspPath + "finish.jsp");
+			dispatcher.forward(request, response);
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();

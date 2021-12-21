@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.atom.training.beans.Role;
 import com.atom.training.beans.User;
+import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
 import com.atom.training.utils.RoleUtils;
@@ -24,6 +25,11 @@ public class UserServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		User loginedUser = CheckLoginUtils.checkLogin(request, response);
+		if (loginedUser == null) {
+			return;
+		}
 		Connection conn = MyUtils.getStoredConnection(request);
 		try {
 			List<User> users = UserUtils.findAllUsers(conn);

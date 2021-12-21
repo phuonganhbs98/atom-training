@@ -10,7 +10,7 @@
 <body class="content">
 	<jsp:include page="_title.jsp">
 		<jsp:param name="title" value="finish" />
-		<jsp:param name="type" value="${title}" />
+		<jsp:param name="type" value="${title=='登録'?'signup':title=='更新'?'edit':'delete'}" />
 	</jsp:include>
 	<p class="title" style="margin-left: 8%">${title}完了しました。</p>
 	<a href="/traning/users" class="main-btn"

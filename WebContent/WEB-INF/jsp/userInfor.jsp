@@ -23,9 +23,9 @@
 				<tr>
 					<td class="login-label">役職：</td>
 					<td class="login-input"><select name="role" value="${role}">
-					<option value=""></option>
+					<option value="" ${role==""? "selected":""}>  </option>
 					<c:forEach items="${roles}" var="r" varStatus="loop">
-							<option value="${r.authorityId }">${r.authorityName} </option>
+							<option value="${r.authorityId }" ${(role!=""&&role==r.authorityId)? "selected":""}>${r.authorityName} </option>
 							</c:forEach>
 					</select></td>
 				</tr>

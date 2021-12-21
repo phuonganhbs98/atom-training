@@ -11,19 +11,19 @@
 	<jsp:include page="_title.jsp">
 		<jsp:param name="title" value="delete" />
 	</jsp:include>
-	<h2>以下のデータを削除してよろしいですか。</h2>
-	<table>
+	<p style="margin-left:3%; font-size: 30px">以下のデータを削除してよろしいですか。</p>
+	<table style="margin: 0 20%; text-align: center;width: 40%;">
 		<tr>
-			<td>ユーザID:</td>
-			<td>${user.userId }</td>
+			<td class="login-label">ユーザID:</td>
+			<td class="login-input">${user.userId }</td>
 		</tr>
 		<tr>
-			<td>氏名:</td>
-			<td>${user.familyName}${user.firstName}</td>
+			<td class="login-label">氏名:</td>
+			<td class="login-input">${user.familyName} ${user.firstName}</td>
 		</tr>
 	</table>
 	<form action="/traning/users/delete" method="post">
-		<input type="submit" value="削除" class="main-btn">
+		<input type="submit" value="削除" class="main-btn" style="margin: 3% 25%; ">
 	</form>
 </body>
 </html>

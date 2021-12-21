@@ -9,10 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.atom.training.beans.Statistic;
 import com.atom.training.beans.User;
+import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
 import com.atom.training.utils.StatisticUtils;
@@ -26,8 +26,10 @@ public class StatisticServlet extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			// TODO: 以下はサンプルです。課題とは無関係の処理です。
-			HttpSession session = request.getSession();
-			User loginedUser = MyUtils.getLoginedUser(session);
+			User loginedUser = CheckLoginUtils.checkLogin(request, response);
+			if (loginedUser == null) {
+				return;
+			}
 			Connection conn = MyUtils.getStoredConnection(request);
 			List<Statistic> result = StatisticUtils.getStatistics(conn);
 			MyUtils.closeConnection(conn);

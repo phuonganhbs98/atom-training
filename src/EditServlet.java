@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import com.atom.training.beans.Gender;
 import com.atom.training.beans.Role;
 import com.atom.training.beans.User;
+import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.GenderUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
@@ -29,13 +30,13 @@ public class EditServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Connection conn = MyUtils.getStoredConnection(request);
-		HttpSession session = request.getSession();
-		User loginedUser = MyUtils.getLoginedUser(session);
+
+		User loginedUser = CheckLoginUtils.checkLogin(request, response);
 		if (loginedUser == null) {
-			response.sendRedirect(request.getContextPath() + "/login");
 			return;
 		}
+
+		Connection conn = MyUtils.getStoredConnection(request);
 
 		String userId = request.getParameter("userId");
 		if (userId == null || userId == "") {
@@ -52,6 +53,8 @@ public class EditServlet extends HttpServlet {
 			request.setAttribute("roles", roles);
 			request.setAttribute("user", user);
 			request.setAttribute("edit", true);
+			System.out.println("----edit----");
+			System.out.println(user.toString());
 			RequestDispatcher dispatcher //
 					= this.getServletContext().getRequestDispatcher(jspPath + "signUp.jsp");
 
@@ -91,12 +94,6 @@ public class EditServlet extends HttpServlet {
 				errorString = "姓が未入力です。";
 			} else if (firstName == null || firstName == "") {
 				errorString = "名が未入力です。";
-			} else if (gender == null || gender == "") {
-				errorString = "性別が未入力です。";
-			} else if (age == null || age == "") {
-				errorString = "年齢が未入力です。";
-			} else if (role == null || role == "") {
-				errorString = "役職が未入力です。";
 			}
 
 			System.out.println("errorString: " + errorString);
