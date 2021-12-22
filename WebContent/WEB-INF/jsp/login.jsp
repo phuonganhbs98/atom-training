@@ -11,7 +11,7 @@
 </head>
 <body class="content">
 	<jsp:include page="_title.jsp">
-		<jsp:param name="title" value="login" />
+		<jsp:param name="title" value="ログイン" />
 	</jsp:include>
 	<div style="margin: auto; text-align: center;">
 		<c:if test="${errorString!=null}">

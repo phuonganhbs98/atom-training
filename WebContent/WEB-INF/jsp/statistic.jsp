@@ -10,7 +10,7 @@
 </head>
 <body class="content">
 	<jsp:include page="_title.jsp">
-		<jsp:param name="title" value="statistic" />
+		<jsp:param name="title" value="役職別集計" />
 	</jsp:include>
 	<div style="padding: 0 5%">
 		<form action="/traning/users/statistic" method="post" style="text-align: right;">

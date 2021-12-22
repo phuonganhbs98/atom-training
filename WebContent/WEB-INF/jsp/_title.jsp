@@ -6,35 +6,24 @@
 		<div>
 			<p class="title">
 				<c:choose>
-					<c:when test="${param.title=='login'}">ログイン</c:when>
-					<c:when test="${param.title=='list'}">一覧</c:when>
-					<c:when test="${param.title=='signup'}">登録</c:when>
-					<c:when test="${param.title=='edit'}">更新</c:when>
-					<c:when test="${param.title=='statistic'}">役職別集計</c:when>
 					<c:when test="${param.title=='finish'}">
-						<c:choose>
-							<c:when test="${param.type=='signup' }">登録</c:when>
-							<c:when test="${param.type=='edit' }">更新</c:when>
-							<c:when test="${param.type=='delete' }">削除</c:when>
-						</c:choose>完了
+						${param.type }完了
 						</c:when>
-					<c:when test="${param.title=='delete'}">削除</c:when>
-					<c:otherwise>タイトル</c:otherwise>
+					<c:otherwise>${param.title} </c:otherwise>
 				</c:choose>
 			</p>
 		</div>
 		<div class="flex-container link">
 			<c:choose>
-				<c:when test="${param.title=='list'}">
+				<c:when test="${param.title=='一覧'}">
 					<a href="/traning/users/statistic">役職別集計</a>
 					<a href="/traning/logout">ログアウト</a>
 				</c:when>
-				<c:when test="${param.title=='statistic'}">
+				<c:when test="${param.title=='役職別集計'}">
 					<a href="/traning">一覧</a>
 				</c:when>
 				<c:otherwise></c:otherwise>
 			</c:choose>
-
 		</div>
 
 	</div>

@@ -53,8 +53,6 @@ public class EditServlet extends HttpServlet {
 			request.setAttribute("roles", roles);
 			request.setAttribute("user", user);
 			request.setAttribute("edit", true);
-			System.out.println("----edit----");
-			System.out.println(user.toString());
 			RequestDispatcher dispatcher //
 					= this.getServletContext().getRequestDispatcher(jspPath + "signUp.jsp");
 
@@ -95,8 +93,6 @@ public class EditServlet extends HttpServlet {
 			} else if (firstName == null || firstName == "") {
 				errorString = "名が未入力です。";
 			}
-
-			System.out.println("errorString: " + errorString);
 
 			user.setFirstName(firstName);
 			user.setFamilyName(familyName);

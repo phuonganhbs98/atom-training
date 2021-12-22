@@ -10,7 +10,7 @@
 </head>
 <body class="content">
 	<jsp:include page="_title.jsp">
-		<jsp:param name="title" value="list" />
+		<jsp:param name="title" value="一覧" />
 	</jsp:include>
 	<form class="flex-container search-form" action="users" method="POST">
 		<div style="width: 40%;">

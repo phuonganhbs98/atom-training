@@ -9,7 +9,7 @@
 </head>
 <body class="content">
 	<jsp:include page="_title.jsp">
-		<jsp:param name="title" value="delete" />
+		<jsp:param name="title" value="削除" />
 	</jsp:include>
 	<p style="margin-left:3%; font-size: 30px">以下のデータを削除してよろしいですか。</p>
 	<table style="margin: 0 20%; text-align: center;width: 40%;">

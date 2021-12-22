@@ -10,7 +10,7 @@
 </head>
 <body class="content">
 	<jsp:include page="_title.jsp">
-		<jsp:param name="title" value="${edit?'edit':'signup'}" />
+		<jsp:param name="title" value="${edit?'更新':'登録'}" />
 	</jsp:include>
 	<div style="margin-bottom: 15px; text-align: center; width: 80%;">
 		<c:if test="${errorString!=null}">
