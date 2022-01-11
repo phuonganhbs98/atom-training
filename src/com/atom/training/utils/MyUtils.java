@@ -1,6 +1,7 @@
 package com.atom.training.utils;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.Cookie;
@@ -33,6 +34,7 @@ public class MyUtils {
 		Connection conn = null;
 		try {
 			conn = ConnectionUtils.getConnection();
+			conn.setAutoCommit(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -40,12 +42,12 @@ public class MyUtils {
 	}
 
 	public static void closeConnection(Connection conn) {
-		/*try {
+		try {
 			conn.commit();
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
-		}*/
+		}
 		ConnectionUtils.closeQuietly(conn);
 	}
 

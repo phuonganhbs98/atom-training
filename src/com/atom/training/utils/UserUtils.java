@@ -83,7 +83,7 @@ public class UserUtils {
 		if (u.getAuthorityId() != null) {
 			sql = sql + "	AND U.AUTHORITY_ID = ?";
 		}
-		sql = sql + "order by u.admin desc, u.user_id asc";
+		sql = sql + " order by U.AUTHORITY_ID desc, u.admin desc";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, "%" + u.getFamilyName() + "%");
@@ -111,6 +111,7 @@ public class UserUtils {
 			user.setAdmin(rs.getInt("admin"));
 			result.add(user);
 		}
+		System.out.println(result);
 		return result;
 	}
 
@@ -129,7 +130,7 @@ public class UserUtils {
 				"		FROM MST_ROLE R\r\n" +
 				"		WHERE R.AUTHORITY_ID = U.AUTHORITY_ID) ROLE_NAME,\r\n" +
 				"	U.ADMIN " +
-				"FROM MST_USER U order by u.admin desc, u.user_id asc";
+				"FROM MST_USER U order by u.authority_id desc, u.admin desc";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 

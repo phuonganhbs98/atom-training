@@ -12,7 +12,7 @@
 	<jsp:include page="_title.jsp">
 		<jsp:param name="title" value="一覧" />
 	</jsp:include>
-	<form class="flex-container search-form" action="users" method="POST">
+	<form class="flex-container search-form" id="search-form" action="users" method="POST">
 		<div style="width: 40%;">
 			<table style="width: 100%;">
 				<tr>
@@ -40,8 +40,8 @@
 				</tr>
 			</table>
 			<div class="flex-container search-btn-group">
-				<input type="button" value="リスト" class="main-btn"> <input
-					type="submit" value="検索" class="main-btn">
+				<input type="button" onclick="myFunction(1)" class="main-btn" value="リスト"> <input
+					type="button"  class="main-btn" onclick="myFunction(0)" value="検索">
 			</div>
 		</div>
 	</form>
@@ -75,5 +75,17 @@
 			</tr>
 		</c:forEach>
 	</table>
+	<script>
+	function myFunction(type) {
+		if(type==1){
+			document.getElementById("search-form").action = "users/print";
+			document.getElementById("search-form").target="_blank";
+		}else{
+			document.getElementById("search-form").action = "users";
+			document.getElementById("search-form").target="_self";
+		}
+		  document.getElementById("search-form").submit();
+		}
+	</script>
 </body>
 </html>

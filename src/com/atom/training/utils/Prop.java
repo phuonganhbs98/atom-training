@@ -2,6 +2,8 @@ package com.atom.training.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 public class Prop {
@@ -12,7 +14,7 @@ public class Prop {
 		InputStream inputStream = Prop.class.getClassLoader().getResourceAsStream(configFile);
 		if (inputStream != null) {
 			try {
-				prop.load(inputStream);
+				prop.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
 				return prop.getProperty(propName);
 			} catch (IOException e) {
 				e.printStackTrace();
