@@ -16,6 +16,7 @@ import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
 import com.atom.training.utils.RoleUtils;
+import com.atom.training.utils.ShowErrorUtils;
 import com.atom.training.utils.UserUtils;
 
 @WebServlet("/users")
@@ -34,16 +35,20 @@ public class UserServlet extends HttpServlet {
 		try {
 			List<User> users = UserUtils.findAllUsers(conn);
 			List<Role> roles = RoleUtils.findAllRoles(conn);
-			MyUtils.closeConnection(conn);
 			request.setAttribute("users", users);
 			request.setAttribute("roles", roles);
 			RequestDispatcher dispatcher //
 					= this.getServletContext().getRequestDispatcher(jspPath + "userInfor.jsp");
-
 			dispatcher.forward(request, response);
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} finally {
+			MyUtils.closeConnection(conn);
 		}
 	}
 
@@ -61,7 +66,6 @@ public class UserServlet extends HttpServlet {
 			search.setAuthorityId((role==""||role==null)?null:Integer.parseInt(role));
 			List<User> users = UserUtils.search(conn, search);
 			List<Role> roles = RoleUtils.findAllRoles(conn);
-			MyUtils.closeConnection(conn);
 			request.setAttribute("users", users);
 			request.setAttribute("roles", roles);
 			request.setAttribute("firstName", firstName);
@@ -72,8 +76,13 @@ public class UserServlet extends HttpServlet {
 
 			dispatcher.forward(request, response);
 		} catch (SQLException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} finally {
+			MyUtils.closeConnection(conn);
 		}
 	}
 

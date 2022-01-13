@@ -116,7 +116,8 @@ select {
 }
 
 .small-btn {
-	width: 100px;
+	/* width: 100px; */
+	padding: 0 25px;
 }
 
 .modal {

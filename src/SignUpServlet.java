@@ -15,11 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.atom.training.beans.Gender;
 import com.atom.training.beans.Role;
 import com.atom.training.beans.User;
+import com.atom.training.conn.ConnectionUtils;
 import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.GenderUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
 import com.atom.training.utils.RoleUtils;
+import com.atom.training.utils.ShowErrorUtils;
 import com.atom.training.utils.UserUtils;
 
 @WebServlet("/users/signup")
@@ -40,7 +42,6 @@ public class SignUpServlet extends HttpServlet {
 		try {
 			List<Gender> genders = GenderUtils.findAllGenders(conn);
 			List<Role> roles = RoleUtils.findAllRoles(conn);
-			MyUtils.closeConnection(conn);
 			request.setAttribute("genders", genders);
 			request.setAttribute("roles", roles);
 			RequestDispatcher dispatcher //
@@ -50,14 +51,15 @@ public class SignUpServlet extends HttpServlet {
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			ConnectionUtils.rollbackQuietly(conn);
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+			ConnectionUtils.rollbackQuietly(conn);
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} finally {
+			MyUtils.closeConnection(conn);
 		}
-		/*RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "signUp.jsp");*/
-		/*if (loginedUser != null) {
-			dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "signup.jsp");
-		} else {
-			dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "login.jsp");
-		}*/
-		//		dispatcher.forward(request, response);
 
 	}
 
@@ -132,12 +134,16 @@ public class SignUpServlet extends HttpServlet {
 					dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "finish.jsp");
 				}
 			}
-			MyUtils.closeConnection(conn);
 			dispatcher.forward(request, response);
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
-			MyUtils.closeConnection(conn);
 			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} finally {
+			MyUtils.closeConnection(conn);
 		}
 	}
 

@@ -16,11 +16,13 @@ import javax.servlet.http.HttpSession;
 import com.atom.training.beans.Gender;
 import com.atom.training.beans.Role;
 import com.atom.training.beans.User;
+import com.atom.training.conn.ConnectionUtils;
 import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.GenderUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
 import com.atom.training.utils.RoleUtils;
+import com.atom.training.utils.ShowErrorUtils;
 import com.atom.training.utils.UserUtils;
 
 @WebServlet("/users/edit")
@@ -46,20 +48,31 @@ public class EditServlet extends HttpServlet {
 
 		try {
 			User user = UserUtils.findByUserId(conn, userId);
+			RequestDispatcher dispatcher;
 			List<Gender> genders = GenderUtils.findAllGenders(conn);
 			List<Role> roles = RoleUtils.findAllRoles(conn);
-			MyUtils.closeConnection(conn);
+
+			if (user == null) {
+				ShowErrorUtils.showError(request, response, "ユーザーは存在しません", this.getServletContext());
+				return;
+			}
+
 			request.setAttribute("genders", genders);
 			request.setAttribute("roles", roles);
 			request.setAttribute("user", user);
 			request.setAttribute("edit", true);
-			RequestDispatcher dispatcher //
-					= this.getServletContext().getRequestDispatcher(jspPath + "signUp.jsp");
-
+			dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "signUp.jsp");
 			dispatcher.forward(request, response);
+
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} finally {
+			MyUtils.closeConnection(conn);
 		}
 	}
 
@@ -73,6 +86,7 @@ public class EditServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/login");
 			return;
 		}
+		RequestDispatcher dispatcher = null;
 		try {
 			User user = new User();
 			String userId = request.getParameter("userId");
@@ -105,7 +119,6 @@ public class EditServlet extends HttpServlet {
 			List<Gender> genders = GenderUtils.findAllGenders(conn);
 			List<Role> roles = RoleUtils.findAllRoles(conn);
 
-			RequestDispatcher dispatcher;
 			if (errorString != null) {
 				request.setAttribute("genders", genders);
 				request.setAttribute("roles", roles);
@@ -115,7 +128,6 @@ public class EditServlet extends HttpServlet {
 				dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "signUp.jsp");
 
 			} else {
-
 				user.setUpdateUserId(loginedUser.getUserId());
 				SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
 				String date = format.format(new Date());
@@ -125,13 +137,21 @@ public class EditServlet extends HttpServlet {
 				request.setAttribute("title", "更新");
 				dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "finish.jsp");
 			}
-			MyUtils.closeConnection(conn);
 			dispatcher.forward(request, response);
+
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
-			MyUtils.closeConnection(conn);
 			e.printStackTrace();
+			ConnectionUtils.rollbackQuietly(conn);
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+			ConnectionUtils.rollbackQuietly(conn);
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} finally {
+			MyUtils.closeConnection(conn);
 		}
+
 	}
 
 }

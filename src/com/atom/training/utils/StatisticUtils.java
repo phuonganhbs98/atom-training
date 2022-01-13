@@ -52,9 +52,6 @@ public class StatisticUtils {
 			}
 			return x;
 		}).sorted((x1, x2) -> x2.getAuthorityId() - x1.getAuthorityId()).collect(Collectors.toList());
-		/*result.forEach(x -> {
-			System.out.println(x.getAuthorityId() + ":" + x.toString());
-		});*/
 
 		return result;
 	}

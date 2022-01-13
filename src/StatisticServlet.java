@@ -15,6 +15,7 @@ import com.atom.training.beans.User;
 import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
+import com.atom.training.utils.ShowErrorUtils;
 import com.atom.training.utils.StatisticUtils;
 
 @WebServlet("/users/statistic")
@@ -22,25 +23,28 @@ public class StatisticServlet extends HttpServlet {
 	private static final String jspPath = Prop.getPropValue("jspPath");
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher dispatcher = null;
+		Connection conn = MyUtils.getStoredConnection(request);
 		try {
 			// TODO: 以下はサンプルです。課題とは無関係の処理です。
 			User loginedUser = CheckLoginUtils.checkLogin(request, response);
 			if (loginedUser == null) {
 				return;
 			}
-			Connection conn = MyUtils.getStoredConnection(request);
 			List<Statistic> result = StatisticUtils.getStatistics(conn);
-			MyUtils.closeConnection(conn);
 			request.setAttribute("result", result);
-			RequestDispatcher dispatcher //
-					= this.getServletContext().getRequestDispatcher(jspPath + "statistic.jsp");
-
+			dispatcher = this.getServletContext().getRequestDispatcher(jspPath + "statistic.jsp");
 			dispatcher.forward(request, response);
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} catch(Exception e) {
+			e.printStackTrace();
+			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+		} finally {
+			MyUtils.closeConnection(conn);
 		}
 	}
 

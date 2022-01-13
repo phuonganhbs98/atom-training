@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import com.atom.training.beans.User;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
+import com.atom.training.utils.ShowErrorUtils;
 import com.atom.training.utils.UserUtils;
 
 @WebServlet("/login")
@@ -57,7 +58,6 @@ public class LoginServlet extends HttpServlet {
 			try {
 				// Tìm user trong DB.
 				user = UserUtils.findUser(conn, userName, password);
-				MyUtils.closeConnection(conn);
 				if (user == null) {
 					hasError = true;
 					errorString = "ログインに失敗しました。";
@@ -67,8 +67,14 @@ public class LoginServlet extends HttpServlet {
 
 			} catch (SQLException e) {
 				e.printStackTrace();
-				hasError = true;
-				errorString = e.getMessage();
+//				hasError = true;
+//				errorString = e.getMessage();
+				ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
+			} finally {
+				MyUtils.closeConnection(conn);
 			}
 		}
 

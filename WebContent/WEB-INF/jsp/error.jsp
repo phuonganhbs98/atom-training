@@ -4,13 +4,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>確認</title>
+<title>エラー</title>
+<link href="../css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body class="content">
 <jsp:include page="_title.jsp">
-		<jsp:param name="title" value="${title=='登録'?signup:edit }" />
+		<jsp:param name="title" value="エラー" />
 	</jsp:include>
-	<p class="title" style="margin-left: 8%">${title}してよろしいですか。</p>
+	<p class="title" style="margin-left: 8%; color: red;">${message}</p>
 	<a href="/traning/users" class="main-btn"　type="button"
 		style="padding: 0 20px; margin-left: 15%">一覧へ戻る</a>
 </body>

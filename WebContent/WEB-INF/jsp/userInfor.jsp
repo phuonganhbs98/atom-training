@@ -68,7 +68,7 @@
 				<td style="text-align: right; width: 8%">${user.age}</td>
 				<td style="width: 15%"><c:if test="${user.admin==1}">★</c:if>
 					${user.roleName}</td>
-				<td class="flex-container" style="width: 230px">
+				<td  style="text-align: center">
 					<a href="/traning/users/edit?userId=${user.userId }"  type="button" class="small-btn main-btn">更新</a> |
 					<a href="/traning/users/delete?userId=${user.userId }" type="button" class=" small-btn main-btn">削除</a>
 				</td>
