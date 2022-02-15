@@ -25,6 +25,17 @@ public class MyUtils {
 		return conn;
 	}
 
+	public static Connection getStoredConnection() {
+		Connection conn = null;
+		try {
+			conn = ConnectionUtils.getConnection();
+			conn.setAutoCommit(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return conn;
+	}
+
 	public static void closeConnection(Connection conn) {
 		try {
 			conn.commit();

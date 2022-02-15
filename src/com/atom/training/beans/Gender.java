@@ -1,5 +1,11 @@
 package com.atom.training.beans;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "gender")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Gender {
 	private Integer genderId;
 	private String genderName;

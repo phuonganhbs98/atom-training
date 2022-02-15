@@ -5,10 +5,10 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	id="WebApp_ID" version="3.0">
 	<display-name>traning</display-name>
-	<filter-mapping>
+	<!-- <filter-mapping>
 		<filter-name>requestFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
@@ -17,6 +17,19 @@
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
+	<servlet>
+        <servlet-name>traning</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.atom.training</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>traning</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
 	<jsp-config>
 		<jsp-property-group>
 			<url-pattern>*.jsp</url-pattern>
@@ -24,9 +37,5 @@
 		</jsp-property-group>
 	</jsp-config>
 
-	<!-- <filter> <filter-name>encoding-filter</filter-name> <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-		<init-param> <param-name>encoding</param-name> <param-value>UTF-8</param-value>
-		</init-param> <init-param> <param-name>forceEncoding</param-name> <param-value>FALSE</param-value>
-		</init-param> </filter> <filter-mapping> <filter-name>encoding-filter</filter-name>
-		<url-pattern>/*</url-pattern> </filter-mapping> -->
+
 </web-app>

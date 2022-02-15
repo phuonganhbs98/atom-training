@@ -1,5 +1,11 @@
 package com.atom.training.beans;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "role")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Role {
 	private Integer authorityId;
 	private String authorityName;
@@ -58,6 +64,11 @@ public class Role {
 
 	public void setUpdateDate(Long updateDate) {
 		this.updateDate = updateDate;
+	}
+
+	@Override
+	public String toString() {
+		return authorityName;
 	}
 
 }

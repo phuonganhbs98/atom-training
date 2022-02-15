@@ -1,5 +1,11 @@
 package com.atom.training.beans;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "statistics")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Statistic {
 	private Integer authorityId;
 	private String authorityName;
