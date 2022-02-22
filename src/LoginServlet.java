@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.atom.training.beans.User;
+import com.atom.training.entity.User;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
 import com.atom.training.utils.ShowErrorUtils;

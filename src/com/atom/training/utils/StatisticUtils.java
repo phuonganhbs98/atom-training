@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.atom.training.beans.Role;
-import com.atom.training.beans.Statistic;
-import com.atom.training.beans.Statistic2;
+import com.atom.training.entity.Role;
+import com.atom.training.entity.Statistic;
+import com.atom.training.entity.Statistic2;
 
 public class StatisticUtils {
 	public static List<Statistic> getStatistics(Connection conn) throws SQLException {

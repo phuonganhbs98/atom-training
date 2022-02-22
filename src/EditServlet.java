@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.atom.training.beans.Gender;
-import com.atom.training.beans.Role;
-import com.atom.training.beans.User;
 import com.atom.training.conn.ConnectionUtils;
+import com.atom.training.entity.Gender;
+import com.atom.training.entity.Role;
+import com.atom.training.entity.User;
 import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.GenderUtils;
 import com.atom.training.utils.MyUtils;

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.atom.training.beans.User;
+import com.atom.training.entity.User;
 
 public class UserUtils {
 	public static User findUser(Connection conn, //
@@ -27,6 +27,8 @@ public class UserUtils {
 			user.setPassword(rs.getString("password"));
 			user.setFirstName(rs.getString("first_name"));
 			user.setFamilyName(rs.getString("family_name"));
+			Object enabled = rs.getObject("enabled");
+			user.setEnabled(enabled == null ? 1 : (int) enabled);
 			return user;
 		}
 		return null;
@@ -35,7 +37,9 @@ public class UserUtils {
 	public static User findByUserId(Connection conn, //
 			String userId) throws SQLException {
 
-		String sql = "Select * from mst_user mu " //
+		String sql = "Select *, mr.authority_name role_name, mg.gender_name gender_name from mst_user mu " //
+				+ " left join mst_role mr on mu.authority_id = mr.authority_id"
+				+ " left join mst_gender mg on mg.gender_id = mg.gender_id "
 				+ " where mu.user_id = ?";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -49,12 +53,17 @@ public class UserUtils {
 			user.setFirstName(rs.getString("first_name"));
 			user.setFamilyName(rs.getString("family_name"));
 			Object genderId = rs.getObject("gender_id");
-			user.setGenderId(genderId==null?null:(int)genderId);
+			user.setGenderId(genderId == null ? null : (int) genderId);
 			Object age = rs.getObject("age");
-			user.setAge(age==null?null:(int)age);
+			user.setAge(age == null ? null : (int) age);
 			Object authorityId = rs.getObject("authority_id");
-			user.setAuthorityId(authorityId==null?null:(int) authorityId);
+			user.setAuthorityId(authorityId == null ? null : (int) authorityId);
 			user.setAdmin(rs.getInt("admin"));
+			Object enabled = rs.getObject("enabled");
+			user.setEnabled(enabled == null ? 1 : (int) enabled);
+			user.setGenderName(rs.getString("gender_name"));
+			user.setRoleName(rs.getString("role_name"));
+
 			return user;
 		}
 		return null;
@@ -86,8 +95,8 @@ public class UserUtils {
 		sql = sql + " order by U.AUTHORITY_ID desc, u.admin desc";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setString(1, "%" + (u.getFamilyName()==null?"":u.getFamilyName()) + "%");
-		pstm.setString(2, "%" + (u.getFirstName()==null?"":u.getFirstName()) + "%");
+		pstm.setString(1, "%" + (u.getFamilyName() == null ? "" : u.getFamilyName()) + "%");
+		pstm.setString(2, "%" + (u.getFirstName() == null ? "" : u.getFirstName()) + "%");
 		if (u.getAuthorityId() != null) {
 			pstm.setInt(3, u.getAuthorityId());
 		}
@@ -102,11 +111,11 @@ public class UserUtils {
 			/*user.setGenderId(rs.getInt("gender_id"));*/
 			user.setGenderName(rs.getString("gender_name"));
 			Object genderId = rs.getObject("gender_id");
-			user.setGenderId(genderId==null?null:(int)genderId);
+			user.setGenderId(genderId == null ? null : (int) genderId);
 			Object age = rs.getObject("age");
-			user.setAge(age==null?null:(int)age);
+			user.setAge(age == null ? null : (int) age);
 			Object authorityId = rs.getObject("authority_id");
-			user.setAuthorityId(authorityId==null?null:(int) authorityId);
+			user.setAuthorityId(authorityId == null ? null : (int) authorityId);
 			user.setRoleName(rs.getString("role_name"));
 			user.setAdmin(rs.getInt("admin"));
 			result.add(user);
@@ -131,7 +140,7 @@ public class UserUtils {
 				"	(SELECT R.AUTHORITY_NAME\r\n" +
 				"		FROM MST_ROLE R\r\n" +
 				"		WHERE R.AUTHORITY_ID = U.AUTHORITY_ID) ROLE_NAME,\r\n" +
-				"	U.ADMIN " +
+				"	U.ADMIN, U.ENABLED " +
 				"FROM MST_USER U\r\n" +
 				"WHERE (U.FAMILY_NAME like ?\r\n" +
 				"	OR U.FIRST_NAME like ?\r\n) ";
@@ -141,8 +150,8 @@ public class UserUtils {
 		sql = sql + " order by U.AUTHORITY_ID desc, u.admin desc";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setString(1, "%" + (u.getFamilyName()==null?"":u.getFamilyName()) + "%");
-		pstm.setString(2, "%" + (u.getFirstName()==null?"":u.getFirstName()) + "%");
+		pstm.setString(1, "%" + (u.getFamilyName() == null ? "" : u.getFamilyName()) + "%");
+		pstm.setString(2, "%" + (u.getFirstName() == null ? "" : u.getFirstName()) + "%");
 		if (u.getAuthorityId() != null) {
 			pstm.setInt(3, u.getAuthorityId());
 		}
@@ -157,13 +166,15 @@ public class UserUtils {
 			/*user.setGenderId(rs.getInt("gender_id"));*/
 			user.setGenderName(rs.getString("gender_name"));
 			Object genderId = rs.getObject("gender_id");
-			user.setGenderId(genderId==null?null:(int)genderId);
+			user.setGenderId(genderId == null ? null : (int) genderId);
 			Object age = rs.getObject("age");
-			user.setAge(age==null?null:(int)age);
+			user.setAge(age == null ? null : (int) age);
 			Object authorityId = rs.getObject("authority_id");
-			user.setAuthorityId(authorityId==null?null:(int) authorityId);
+			user.setAuthorityId(authorityId == null ? null : (int) authorityId);
 			user.setRoleName(rs.getString("role_name"));
 			user.setAdmin(rs.getInt("admin"));
+			Object enabled = rs.getObject("enabled");
+			user.setEnabled(enabled == null ? 1 : (int) enabled);
 			result.add(user);
 		}
 		System.out.println(result);
@@ -184,7 +195,7 @@ public class UserUtils {
 				"	(SELECT R.AUTHORITY_NAME\r\n" +
 				"		FROM MST_ROLE R\r\n" +
 				"		WHERE R.AUTHORITY_ID = U.AUTHORITY_ID) ROLE_NAME,\r\n" +
-				"	U.ADMIN " +
+				"	U.ADMIN, U.ENABLED " +
 				"FROM MST_USER U order by u.authority_id desc, u.admin desc";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
@@ -198,14 +209,16 @@ public class UserUtils {
 			u.setFamilyName(rs.getString("family_name"));
 			u.setFirstName(rs.getString("first_name"));
 			Object genderId = rs.getObject("gender_id");
-			u.setGenderId(genderId==null?null:(int)genderId);
+			u.setGenderId(genderId == null ? null : (int) genderId);
 			Object age = rs.getObject("age");
-			u.setAge(age==null?null:(int)age);
+			u.setAge(age == null ? null : (int) age);
 			Object authorityId = rs.getObject("authority_id");
-			u.setAuthorityId(authorityId==null?null:(int) authorityId);
+			u.setAuthorityId(authorityId == null ? null : (int) authorityId);
 			u.setGenderName(rs.getString("gender_name"));
 			u.setRoleName(rs.getString("role_name"));
 			u.setAdmin(rs.getInt("admin"));
+			Object enabled = rs.getObject("enabled");
+			u.setEnabled(enabled == null ? 1 : (int) enabled);
 			list.add(u);
 		}
 		return list;
@@ -222,9 +235,9 @@ public class UserUtils {
 	}
 
 	public static void createUser(Connection conn, User u) throws SQLException {
-		String sql = "insert into mst_user(user_id, password, family_name, first_name, gender_id, age, authority_id, admin, create_user_id, update_user_id, create_date, update_date)\r\n"
+		String sql = "insert into mst_user(user_id, password, family_name, first_name, gender_id, age, authority_id, admin, create_user_id, update_user_id, create_date, update_date, enabled)\r\n"
 				+
-				"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+				"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		int i = 1;
@@ -240,16 +253,28 @@ public class UserUtils {
 		pstm.setString(i++, u.getUpdateUserId());
 		pstm.setLong(i++, u.getCreateDate());
 		pstm.setLong(i++, u.getUpdateDate());
+		pstm.setInt(i++, 1);
+
+		pstm.executeUpdate();
+	}
+
+	public static void lockUser(Connection conn, String userId, Integer enabled) throws SQLException {
+		String sql = "update mst_user set enabled= ? where userId = ?";
+
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		int i = 1;
+		pstm.setInt(i++, enabled);
+		pstm.setString(i++, userId);
 
 		pstm.executeUpdate();
 	}
 
 	public static void updateUser(Connection conn, User u) throws SQLException {
-		String sql = "update mst_user set password=?, family_name=?, first_name=?, gender_id=?, age=?, authority_id=?, admin=?, update_user_id=?, update_date=? where user_id=?\r\n";
+		String sql = "update mst_user set password=?, family_name=?, first_name=?, gender_id=?, age=?, authority_id=?, admin=?, update_user_id=?, update_date=?, enabled=? where user_id=?\r\n";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		int i = 1;
-
+		System.out.println("enabled= " + u.getEnabled());
 		pstm.setString(i++, u.getPassword());
 		pstm.setString(i++, u.getFamilyName());
 		pstm.setString(i++, u.getFirstName());
@@ -259,6 +284,7 @@ public class UserUtils {
 		pstm.setInt(i++, u.getAdmin());
 		pstm.setString(i++, u.getUpdateUserId());
 		pstm.setLong(i++, u.getUpdateDate());
+		pstm.setInt(i++, u.getEnabled());
 		pstm.setString(i++, u.getUserId());
 
 		pstm.executeUpdate();

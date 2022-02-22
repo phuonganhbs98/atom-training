@@ -14,11 +14,15 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import com.atom.training.beans.JsonResponse;
-import com.atom.training.beans.Statistic;
-import com.atom.training.beans.User;
+import com.atom.training.entity.CurrentUser;
+import com.atom.training.entity.Statistic;
+import com.atom.training.entity.User;
+import com.atom.training.response.ResultResponse;
+import com.atom.training.security.JWTokenHelper;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.StatisticUtils;
 import com.atom.training.utils.UserUtils;
@@ -32,19 +36,25 @@ public class UserApi {
 	@POST
 	@Path("/search")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<User> search(User u) {
+	public Response search(User u) {
+		String err = null;
 		Connection conn = MyUtils.getStoredConnection();
 		List<User> users = null;
 		try {
 			users = UserUtils.searchOnAndroid(conn, u);
 		} catch (SQLException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			err = e.getMessage();
 		} finally {
 			MyUtils.closeConnection(conn);
 		}
 
-		return users == null ? new ArrayList<>() : users;
+		if (err != null) {
+			return ResultResponse.responseError(err, 500);
+		}
+
+		return ResultResponse.responseOk(new GenericEntity<List<User>>(users) {
+		});
 	}
 
 	/**
@@ -53,19 +63,22 @@ public class UserApi {
 	@GET
 	@Path("/{userId}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public User findByUserId(@PathParam("userId") String userId) {
+	public Response findByUserId(@PathParam("userId") String userId) {
+		String err = null;
 		Connection conn = MyUtils.getStoredConnection();
 		User u = null;
 		try {
 			u = UserUtils.findByUserId(conn, userId);
 		} catch (SQLException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			err = e.getMessage();
 		} finally {
 			MyUtils.closeConnection(conn);
 		}
-
-		return u;
+		if (err == null) {
+			return ResultResponse.responseOk(u);
+		}
+		return ResultResponse.responseError(err, 400);
 	}
 
 	/**
@@ -73,10 +86,7 @@ public class UserApi {
 	 */
 	@POST
 	@Produces({ MediaType.APPLICATION_JSON })
-	public JsonResponse<String> createUser(User u) {
-
-		System.out.println("-------------");
-		System.out.println(u.toString());
+	public Response createUser(User u) {
 
 		String result = null;
 		if (u.getUserId() == null || u.getUserId() == "") {
@@ -89,39 +99,37 @@ public class UserApi {
 			result = "名が未入力です。";
 		}
 
-		if (result == null) {
-			Connection conn = MyUtils.getStoredConnection();
-			try {
-				User checkUser = UserUtils.findByUserId(conn, u.getUserId());
-				if (checkUser != null) {
-					System.out.println("HERE...");
-					result = "ユーザIDが重複しています。";
-				} else {
-					//					user.setCreateUserId(loginedUser.getUserId());
-					//					user.setUpdateUserId(loginedUser.getUserId());
-					SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-					String date = format.format(new Date());
-					u.setCreateDate(Long.valueOf(date));
-					u.setUpdateDate(Long.valueOf(date));
-					UserUtils.createUser(conn, u);
-				}
-			} catch (SQLException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-				result = e.getMessage();
-			} finally {
-				MyUtils.closeConnection(conn);
-			}
-		}
-
-		JsonResponse<String> response = new JsonResponse<>();
 		if (result != null) {
-			response.setMessage(result);
-		} else {
-			response.setValue("Success");
+			return ResultResponse.responseError(result, 400);
 		}
 
-		return response;
+		Connection conn = MyUtils.getStoredConnection();
+		try {
+			User checkUser = UserUtils.findByUserId(conn, u.getUserId());
+			if (checkUser != null) {
+				result = "ユーザIDが重複しています。";
+				return ResultResponse.responseError(result, 400);
+			}
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+			String date = format.format(new Date());
+			u.setCreateDate(Long.valueOf(date));
+			u.setUpdateDate(Long.valueOf(date));
+			User loginedUser = CurrentUser.getInstance().getUser();
+			u.setUpdateUserId(loginedUser.getUserId());
+			u.setCreateUserId(loginedUser.getUserId());
+			UserUtils.createUser(conn, u);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		} finally {
+			MyUtils.closeConnection(conn);
+		}
+
+		if (result != null) {
+			return ResultResponse.responseError(result, 500);
+		}
+
+		return ResultResponse.responseOk(new User());
 	}
 
 	/**
@@ -129,11 +137,7 @@ public class UserApi {
 	 */
 	@PUT
 	@Produces({ MediaType.APPLICATION_JSON })
-	public JsonResponse<String> updateUser(User u) {
-
-		System.out.println("-------------");
-		System.out.println(u.toString());
-
+	public Response updateUser(User u) {
 		String result = null;
 		if (u.getUserId() == null || u.getUserId() == "") {
 			result = "ユーザIDが未入力です。";
@@ -145,32 +149,29 @@ public class UserApi {
 			result = "名が未入力です。";
 		}
 
-		if (result == null) {
-			Connection conn = MyUtils.getStoredConnection();
-			try {
-				//					user.setCreateUserId(loginedUser.getUserId());
-				//					user.setUpdateUserId(loginedUser.getUserId());
-				SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-				String date = format.format(new Date());
-				u.setUpdateDate(Long.valueOf(date));
-				UserUtils.updateUser(conn, u);
-			} catch (SQLException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-				result = e.getMessage();
-			} finally {
-				MyUtils.closeConnection(conn);
-			}
+		if (result != null) {
+			return ResultResponse.responseError(result, 400);
 		}
 
-		JsonResponse<String> response = new JsonResponse<>();
-		if(result!=null) {
-			response.setMessage(result);
-		}else {
-			response.setValue("Success");
+		Connection conn = MyUtils.getStoredConnection();
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+			String date = format.format(new Date());
+			u.setUpdateDate(Long.valueOf(date));
+			User loginedUser = CurrentUser.getInstance().getUser();
+			u.setUpdateUserId(loginedUser.getUserId());
+			UserUtils.updateUser(conn, u);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		} finally {
+			MyUtils.closeConnection(conn);
 		}
 
-		return response;
+		if (result != null) {
+			return ResultResponse.responseError(result, 500);
+		}
+		return ResultResponse.responseOk(new User());
 	}
 
 	/**
@@ -180,31 +181,29 @@ public class UserApi {
 	@DELETE
 	@Path("/{userId}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public JsonResponse<String> deleteUser(@PathParam("userId") String userId) {
+	public Response deleteUser(@PathParam("userId") String userId) {
 		String result = null;
 		Connection conn = MyUtils.getStoredConnection();
+		User checkUser = null;
 		try {
-			User checkUser = UserUtils.findByUserId(conn, userId);
+			checkUser = UserUtils.findByUserId(conn, userId);
 			if (checkUser == null) {
 				result = "ユーザーは存在しません。";
-			} else {
-				UserUtils.deleteUser(conn, userId);
+				return ResultResponse.responseError(result, 400);
 			}
+			UserUtils.deleteUser(conn, userId);
+
 		} catch (SQLException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 			result = e.getMessage();
 		} finally {
 			MyUtils.closeConnection(conn);
 		}
 
-		JsonResponse<String> response = new JsonResponse<>();
-		if(result!=null) {
-			response.setMessage(result);
-		}else {
-			response.setValue("Success");
+		if (result != null) {
+			return ResultResponse.responseError(result, 500);
 		}
-		return response;
+		return ResultResponse.responseOk(new User());
 	}
 
 	/**
@@ -213,18 +212,22 @@ public class UserApi {
 	@POST
 	@Path("/login")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public JsonResponse<String> login(User u) {
+	public Response login(User u) {
+		System.out.println(u.toString());
 		String errorString = null;
+		User user = null;
 		if (u.getUserId() == null || u.getPassword() == null || u.getUserId().length() == 0
 				|| u.getPassword().length() == 0) {
 			errorString = "ログインに失敗しました。";
 		} else {
 			Connection conn = MyUtils.getStoredConnection();
 			try {
-				// Tìm user trong DB.
-				User user = UserUtils.findUser(conn, u.getUserId(), u.getPassword());
+				user = UserUtils.findUser(conn, u.getUserId(), u.getPassword());
 				if (user == null) {
 					errorString = "ログインに失敗しました。";
+				} else if (user.getEnabled() == 0) {
+					System.out.println(".......abcabc");
+					errorString = "アカウントがロックされました";
 				} else {
 					errorString = null;
 				}
@@ -240,10 +243,13 @@ public class UserApi {
 			}
 		}
 
-		JsonResponse<String> response = new JsonResponse<>();
-		response.setMessage(errorString);
-		response.setValue(null);
-		return response;
+		//トークン作成
+		if (errorString == null) {
+			String token = JWTokenHelper.createJWT(user);
+			return ResultResponse.responseOk(token);
+		}
+
+		return ResultResponse.responseError(errorString, 401);
 	}
 
 	/**
@@ -252,17 +258,77 @@ public class UserApi {
 	@POST
 	@Path("/statistics")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public List<Statistic> statisticByRole() {
+	public Response statisticByRole() {
 		List<Statistic> result = new ArrayList<>();
+		String err = null;
 		Connection conn = MyUtils.getStoredConnection();
 		try {
 			result = StatisticUtils.getStatistics(conn);
 		} catch (SQLException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
+			err = e.getMessage();
 		} finally {
 			MyUtils.closeConnection(conn);
 		}
-		return result;
+		if (err != null) {
+			return ResultResponse.responseError(err, 500);
+		}
+		return ResultResponse.responseOk(new GenericEntity<List<Statistic>>(result) {
+		});
+	}
+
+	/**
+	 * get profile
+	 */
+	@GET
+	@Path("/profile")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getProfile() {
+		String err = null;
+		Connection conn = MyUtils.getStoredConnection();
+		User u = null;
+		try {
+			User current = CurrentUser.getInstance().getUser();
+			u = UserUtils.findByUserId(conn, current.getUserId());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			err = e.getMessage();
+		} finally {
+			MyUtils.closeConnection(conn);
+		}
+		if (err == null) {
+			return ResultResponse.responseOk(u);
+		}
+		return ResultResponse.responseError(err, 400);
+	}
+
+
+	/**
+	 * lock
+	 */
+	@POST
+	@Path("/{userId}/lock")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response lockUser(@PathParam("userId") String userId) {
+		String err = null;
+		Connection conn = MyUtils.getStoredConnection();
+		User u = null;
+		try {
+			u = UserUtils.findByUserId(conn, userId);
+			if(u==null) {
+				err = "ユーザが存在しません";
+			}else {
+				UserUtils.lockUser(conn, userId, u.getEnabled()==1?0:1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			err = e.getMessage();
+		} finally {
+			MyUtils.closeConnection(conn);
+		}
+		if (err == null) {
+			return ResultResponse.responseOk(new User());
+		}
+		return ResultResponse.responseError(err, 400);
 	}
 }

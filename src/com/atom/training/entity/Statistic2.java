@@ -1,4 +1,4 @@
-package com.atom.training.beans;
+package com.atom.training.entity;
 
 public class Statistic2 {
 	private Integer authorityId;

@@ -14,12 +14,5 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Atom/アインさん/アインさん/traning/WebContent/WEB-INF/lib/asm-9.2.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jersey-bundle-1.19.4.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jersey-core-1.19.4.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jersey-server-1.19.4.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/servlet-api-2.5.jar"/>
-	<classpathentry kind="lib" path="C:/Atom/アインさん/アインさん/traning/WebContent/WEB-INF/lib/json-20211205.jar"/>
-	<classpathentry kind="lib" path="C:/Atom/アインさん/アインさん/traning/WebContent/WEB-INF/lib/jackson-all-1.9.5.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

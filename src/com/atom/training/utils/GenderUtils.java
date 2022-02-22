@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.atom.training.beans.Gender;
+import com.atom.training.entity.Gender;
 
 public class GenderUtils {
 
@@ -23,6 +23,24 @@ public class GenderUtils {
 			list.add(g);
 		}
 		return list;
+	}
+
+	public static Gender findByGenderId(Connection conn, Integer genderId) throws SQLException {
+
+		String sql = "Select * from mst_gender mg " //
+				+ " where mg.gender_id = ?";
+
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setInt(1, genderId);
+		ResultSet rs = pstm.executeQuery();
+
+		if (rs.next()) {
+			Gender g = new Gender();
+			g.setGenderId(rs.getInt("gender_id"));
+			g.setGenderName(rs.getString("gender_name"));
+			return g;
+		}
+		return null;
 	}
 
 }

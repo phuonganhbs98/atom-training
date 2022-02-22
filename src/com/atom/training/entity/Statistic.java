@@ -1,4 +1,4 @@
-package com.atom.training.beans;
+package com.atom.training.entity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

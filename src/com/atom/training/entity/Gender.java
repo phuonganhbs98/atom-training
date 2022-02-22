@@ -1,74 +1,60 @@
-package com.atom.training.beans;
+package com.atom.training.entity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "role")
+@XmlRootElement(name = "gender")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Role {
-	private Integer authorityId;
-	private String authorityName;
+public class Gender {
+	private Integer genderId;
+	private String genderName;
 	private String createUserId;
 	private String updateUserId;
 	private Long createDate;
 	private Long updateDate;
 
-	public Role() {
+	public Gender() {
 		super();
+		// TODO 自動生成されたコンストラクター・スタブ
 	}
-
-	public Integer getAuthorityId() {
-		return authorityId;
+	public Integer getGenderId() {
+		return genderId;
 	}
-
-	public void setAuthorityId(Integer authorityId) {
-		this.authorityId = authorityId;
+	public void setGenderId(Integer genderId) {
+		this.genderId = genderId;
 	}
-
-	public String getAuthorityName() {
-		return authorityName;
+	public String getGenderName() {
+		return genderName;
 	}
-
-	public void setAuthorityName(String authorityName) {
-		this.authorityName = authorityName;
+	public void setGenderName(String genderName) {
+		this.genderName = genderName;
 	}
-
 	public String getCreateUserId() {
 		return createUserId;
 	}
-
 	public void setCreateUserId(String createUserId) {
 		this.createUserId = createUserId;
 	}
-
 	public String getUpdateUserId() {
 		return updateUserId;
 	}
-
 	public void setUpdateUserId(String updateUserId) {
 		this.updateUserId = updateUserId;
 	}
-
 	public Long getCreateDate() {
 		return createDate;
 	}
-
 	public void setCreateDate(Long createDate) {
 		this.createDate = createDate;
 	}
-
 	public Long getUpdateDate() {
 		return updateDate;
 	}
-
 	public void setUpdateDate(Long updateDate) {
 		this.updateDate = updateDate;
 	}
 
-	@Override
-	public String toString() {
-		return authorityName;
-	}
+
 
 }

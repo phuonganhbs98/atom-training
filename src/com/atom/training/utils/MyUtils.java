@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.atom.training.beans.User;
 import com.atom.training.conn.ConnectionUtils;
+import com.atom.training.entity.User;
 
 public class MyUtils {
 	public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";

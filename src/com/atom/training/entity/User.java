@@ -1,4 +1,4 @@
-package com.atom.training.beans;
+package com.atom.training.entity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,6 +18,7 @@ public class User {
 	private Integer authorityId;
 	private String roleName;
 	private Integer admin;
+	private Integer enabled;
 	private String createUserId;
 	private String updateUserId;
 	private Long createDate;
@@ -147,5 +148,14 @@ public class User {
 	public void setUpdateDate(Long updateDate) {
 		this.updateDate = updateDate;
 	}
+
+	public Integer getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Integer enabled) {
+		this.enabled = enabled;
+	}
+
 
 }

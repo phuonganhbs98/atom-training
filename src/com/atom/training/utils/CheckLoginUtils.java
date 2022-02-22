@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.atom.training.beans.User;
+import com.atom.training.entity.User;
 
 public class CheckLoginUtils {
 	public static User checkLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
