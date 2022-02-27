@@ -39,9 +39,12 @@ public class UserApi {
 	public Response search(User u) {
 		String err = null;
 		Connection conn = MyUtils.getStoredConnection();
-		List<User> users = null;
+		List<User> users = new ArrayList<>();
 		try {
 			users = UserUtils.searchOnAndroid(conn, u);
+			if (users != null && users.size() == 1) {
+				users.add(new User());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			err = e.getMessage();
@@ -97,6 +100,14 @@ public class UserApi {
 			result = "姓が未入力です。";
 		} else if (u.getFirstName() == null || u.getFirstName() == "") {
 			result = "名が未入力です。";
+		} else if (u.getUserId().length() > 8) {
+			result = "ユーザーIDは8文字までしか入力できません。";
+		} else if (u.getPassword().length() > 8) {
+			result = "パスワードは8文字までしか入力できません。";
+		} else if (u.getFamilyName().length() > 10) {
+			result = "姓は10文字までしか入力できません。";
+		} else if (u.getFirstName().length() > 10) {
+			result = "名は10文字までしか入力できません。";
 		}
 
 		if (result != null) {
@@ -302,7 +313,6 @@ public class UserApi {
 		return ResultResponse.responseError(err, 400);
 	}
 
-
 	/**
 	 * lock
 	 */
@@ -315,10 +325,10 @@ public class UserApi {
 		User u = null;
 		try {
 			u = UserUtils.findByUserId(conn, userId);
-			if(u==null) {
+			if (u == null) {
 				err = "ユーザが存在しません";
-			}else {
-				UserUtils.lockUser(conn, userId, u.getEnabled()==1?0:1);
+			} else {
+				UserUtils.lockUser(conn, userId, u.getEnabled() == 1 ? 0 : 1);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

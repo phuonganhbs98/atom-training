@@ -37,10 +37,21 @@ public class UserUtils {
 	public static User findByUserId(Connection conn, //
 			String userId) throws SQLException {
 
-		String sql = "Select *, mr.authority_name role_name, mg.gender_name gender_name from mst_user mu " //
-				+ " left join mst_role mr on mu.authority_id = mr.authority_id"
-				+ " left join mst_gender mg on mg.gender_id = mg.gender_id "
-				+ " where mu.user_id = ?";
+		String sql = "SELECT MU.USER_ID," +
+				"	MU.PASSWORD," +
+				"	MU.FAMILY_NAME," +
+				"	MU.FIRST_NAME," +
+				"	MU.GENDER_ID," +
+				"	MG.GENDER_NAME GENDER_NAME," +
+				"	MU.AGE," +
+				"	MU.AUTHORITY_ID," +
+				"	MR.AUTHORITY_NAME ROLE_NAME," +
+				"	MU.ENABLED," +
+				"	MU.ADMIN " +
+				"FROM MST_USER MU " +
+				"LEFT JOIN MST_ROLE MR ON MU.AUTHORITY_ID = MR.AUTHORITY_ID " +
+				"LEFT JOIN MST_GENDER MG ON MU.GENDER_ID = MG.GENDER_ID " +
+				"WHERE MU.USER_ID = ?;";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 		pstm.setString(1, userId);
