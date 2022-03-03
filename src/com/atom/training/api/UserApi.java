@@ -14,6 +14,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -36,12 +37,13 @@ public class UserApi {
 	@POST
 	@Path("/search")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response search(User u) {
+	public Response search(User u, @QueryParam("page") Integer page) {
+		System.out.println("page: " + page);
 		String err = null;
 		Connection conn = MyUtils.getStoredConnection();
 		List<User> users = new ArrayList<>();
 		try {
-			users = UserUtils.searchOnAndroid(conn, u);
+			users = UserUtils.searchOnAndroid(conn, u, page);
 			if (users != null && users.size() == 1) {
 				users.add(new User());
 			}

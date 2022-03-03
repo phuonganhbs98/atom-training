@@ -136,7 +136,7 @@ public class UserUtils {
 	}
 
 	public static List<User> searchOnAndroid(Connection conn, //
-			User u) throws SQLException {
+			User u, Integer page) throws SQLException {
 
 		String sql = "SELECT U.USER_ID,\r\n" +
 				"	U.PASSWORD,\r\n" +
@@ -158,14 +158,16 @@ public class UserUtils {
 		if (u.getAuthorityId() != null) {
 			sql = sql + "	AND U.AUTHORITY_ID = ?";
 		}
-		sql = sql + " order by U.AUTHORITY_ID desc, u.admin desc";
+		sql = sql + " order by U.AUTHORITY_ID desc, u.admin desc LIMIT 10 OFFSET (?-1)*10 ";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
-		pstm.setString(1, "%" + (u.getFamilyName() == null ? "" : u.getFamilyName()) + "%");
-		pstm.setString(2, "%" + (u.getFirstName() == null ? "" : u.getFirstName()) + "%");
+		int i=1;
+		pstm.setString(i++, "%" + (u.getFamilyName() == null ? "" : u.getFamilyName()) + "%");
+		pstm.setString(i++, "%" + (u.getFirstName() == null ? "" : u.getFirstName()) + "%");
 		if (u.getAuthorityId() != null) {
-			pstm.setInt(3, u.getAuthorityId());
+			pstm.setInt(i++, u.getAuthorityId());
 		}
+		pstm.setInt(i++, page);
 		ResultSet rs = pstm.executeQuery();
 		List<User> result = new ArrayList<>();
 		while (rs.next()) {
@@ -174,7 +176,6 @@ public class UserUtils {
 			user.setPassword(rs.getString("password"));
 			user.setFirstName(rs.getString("first_name"));
 			user.setFamilyName(rs.getString("family_name"));
-			/*user.setGenderId(rs.getInt("gender_id"));*/
 			user.setGenderName(rs.getString("gender_name"));
 			Object genderId = rs.getObject("gender_id");
 			user.setGenderId(genderId == null ? null : (int) genderId);
