@@ -80,6 +80,66 @@ public class UserUtils {
 		return null;
 	}
 
+	public static ResultSet searchJasper(Connection conn, //
+			User u) throws SQLException {
+
+		String sql = "SELECT U.USER_ID,\r\n" +
+				"	U.PASSWORD,\r\n" +
+				"	U.FAMILY_NAME,\r\n" +
+				"	U.FIRST_NAME,\r\n" +
+				"	U.GENDER_ID,\r\n" +
+				"	(SELECT G.GENDER_NAME\r\n" +
+				"		FROM MST_GENDER G\r\n" +
+				"		WHERE G.GENDER_ID = U.GENDER_ID) GENDER_NAME,\r\n" +
+				"	U.AGE,\r\n" +
+				"	U.AUTHORITY_ID,\r\n" +
+				"	(SELECT R.AUTHORITY_NAME\r\n" +
+				"		FROM MST_ROLE R\r\n" +
+				"		WHERE R.AUTHORITY_ID = U.AUTHORITY_ID) ROLE_NAME,\r\n" +
+				"	U.ADMIN, U.ENABLED " +
+				"FROM MST_USER U\r\n" +
+				"WHERE U.FAMILY_NAME like ?\r\n" +
+				"	AND U.FIRST_NAME like ?\r\n ";
+		if (u.getAuthorityId() != null) {
+			sql = sql + "	AND U.AUTHORITY_ID = ?";
+		}
+		sql = sql + " order by U.AUTHORITY_ID desc, u.admin desc";
+
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, "%" + (u.getFamilyName() == null ? "" : u.getFamilyName()) + "%");
+		pstm.setString(2, "%" + (u.getFirstName() == null ? "" : u.getFirstName()) + "%");
+		if (u.getAuthorityId() != null) {
+			pstm.setInt(3, u.getAuthorityId());
+		}
+		return pstm.executeQuery();
+
+	}
+
+	public static Integer getCountOfSearch(Connection conn, //
+			User u) throws SQLException {
+
+		String sql = "SELECT count(*) count " +
+				"FROM MST_USER U\r\n" +
+				"WHERE U.FAMILY_NAME like ?\r\n" +
+				"	AND U.FIRST_NAME like ?\r\n ";
+		if (u.getAuthorityId() != null) {
+			sql = sql + "	AND U.AUTHORITY_ID = ?";
+		}
+
+		PreparedStatement pstm = conn.prepareStatement(sql);
+		pstm.setString(1, "%" + (u.getFamilyName() == null ? "" : u.getFamilyName()) + "%");
+		pstm.setString(2, "%" + (u.getFirstName() == null ? "" : u.getFirstName()) + "%");
+		if (u.getAuthorityId() != null) {
+			pstm.setInt(3, u.getAuthorityId());
+		}
+
+		ResultSet rs = pstm.executeQuery();
+		if(rs.next()) {
+			return rs.getInt("count");
+		}
+		return 0;
+	}
+
 	public static List<User> search(Connection conn, //
 			User u) throws SQLException {
 

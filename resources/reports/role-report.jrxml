@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="role_report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2af474a8-f5ad-4e45-8c9a-84127ea408e7">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="authority_id" class="java.lang.Integer"/>
+	<field name="authority_name" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<frame>
+				<reportElement x="50" y="0" width="460" height="32" uuid="117ea641-e8d4-4076-b654-44793c4acf21"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+			</frame>
+			<staticText>
+				<reportElement x="50" y="0" width="230" height="30" uuid="d30b32b9-b197-420c-a13e-d602e0a94fd6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="90cf6798-b0f5-41f1-9745-bc5c62bca96e"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="IPAex" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="230" height="30" uuid="259fbb01-f52d-4d18-b034-80f0949aef61">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ae957660-ee63-4170-97f7-0c10066e4047"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="IPAex" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[役職]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<frame>
+				<reportElement x="50" y="0" width="460" height="30" uuid="e984fc24-53a6-4a3a-90a9-25b872e2fce5"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textField>
+					<reportElement x="0" y="1" width="230" height="30" uuid="dc899c7d-831a-4db6-be01-d846eefac2f8">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="90cf6798-b0f5-41f1-9745-bc5c62bca96e"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="IPAex"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{authority_id}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="230" y="1" width="230" height="30" uuid="df39875d-6ac2-4ce6-b4f3-af5ee795d983">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ae957660-ee63-4170-97f7-0c10066e4047"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="IPAex"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{authority_name}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>

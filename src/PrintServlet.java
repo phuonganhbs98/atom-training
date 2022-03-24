@@ -1,29 +1,41 @@
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.atom.training.entity.Role;
 import com.atom.training.entity.User;
-import com.atom.training.utils.CheckLoginUtils;
 import com.atom.training.utils.MyUtils;
 import com.atom.training.utils.Prop;
-import com.atom.training.utils.ShowErrorUtils;
+import com.atom.training.utils.RoleUtils;
 import com.atom.training.utils.UserUtils;
 
-import jp.co.nobworks.openfunxion4.core.BlockLayout;
-import jp.co.nobworks.openfunxion4.core.OpenFunXion;
-import jp.co.nobworks.openfunxion4.core.OpenFunXionException;
-import jp.co.nobworks.openfunxion4.core.Text;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.OutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 
 @WebServlet("/users/print")
 public class PrintServlet extends HttpServlet {
@@ -36,120 +48,25 @@ public class PrintServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		// TODO: 以下はサンプルです。課題とは無関係の処理です。
-		User loginedUser = CheckLoginUtils.checkLogin(request, response);
-		if (loginedUser == null) {
-			return;
-		}
-
-		OpenFunXion ofx;
-		try {
-			ofx = new OpenFunXion(XML_FILE);
-		} catch (Exception e) {
-			e.printStackTrace();
-			request.setAttribute("message", XML_FILE + "指定されたファイルが見つかりません");
-			RequestDispatcher dispatcher //
-					= this.getServletContext().getRequestDispatcher(jspPath + "error.jsp");
-			dispatcher.forward(request, response);
-			return;
-		}
+		//		User loginedUser = CheckLoginUtils.checkLogin(request, response);
+		//		if (loginedUser == null) {
+		//			return;
+		//		}
 
 		try {
-			ofx.open(response);
-		} catch (OpenFunXionException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
-		}
-		response.setContentType("application/pdf");
-		try {
-			makePdf(ofx, request);
-		} catch (Exception e) {
-			e.printStackTrace();
-			ShowErrorUtils.showError(request, response, e.getMessage(), this.getServletContext());
-		}
-	}
-
-	private void makePdf(OpenFunXion ofx, HttpServletRequest request) throws SQLException {
-		List<User> dataList = getData(request);
-		int totalPage = getTotalPage(dataList);
-		printOutline(ofx);
-
-		int moveY = 12 * 3;
-
-		Integer pageNo = 1;
-		Text page = ofx.getText("page");
-		page.setMessage(pageNo.toString() + "/" + totalPage);
-		page.print();
-
-		int count = 0;
-
-		//		Line rowLine = ofx.getLine("row_line");
-		Text userId = ofx.getText("userId");
-		Text name = ofx.getText("name");
-		Text number = ofx.getText("number");
-		Text gender = ofx.getText("gender");
-		Text age = ofx.getText("age");
-		Text role = ofx.getText("role");
-		Text date = ofx.getText("date");
-
-		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-		String dateFormat = format.format(new Date());
-		date.setMessage(dateFormat);
-		date.print();
-
-		BlockLayout dataBlock = ofx.getBlockLayout("data_block");
-		Integer preRole = dataList.get(0).getAuthorityId();
-		role.setMessage(dataList.get(0).getRoleName() == null ? "未登録" : dataList.get(0).getRoleName());
-		role.print();
-		for (Iterator<User> it = dataList.iterator(); it.hasNext();) {
-			User model = (User) it.next();
-
-			if (count > 0 && (count % 20 == 0 || model.getAuthorityId() != preRole)) {
-				ofx.newPage();
-				dataBlock.resetPosition();
-
-				printOutline(ofx);
-				pageNo++;
-				page.setMessage(pageNo.toString() + "/" + totalPage);
-				page.print();
-				date.setMessage(dateFormat);
-				date.print();
-				role.setMessage(model.getRoleName());
-				role.print();
-				if (model.getAuthorityId() != preRole) {
-					count = 0;
-				}
+			try {
+				long start = System.currentTimeMillis();
+				//				printByJasperReport(request);
+				manyJrxmlFileExample(request);
+				long end = System.currentTimeMillis();
+				System.out.println("Processed in " + (end - start) + "ms");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 			}
-			preRole = model.getAuthorityId();
-
-			userId.setMessage(model.getUserId());
-			userId.print();
-			userId.moveY(moveY);
-
-			Integer no = count + 1;
-			number.setMessage(no.toString());
-			number.print();
-			number.moveY(moveY);
-
-			name.setMessage(model.getFamilyName() + " " + model.getFirstName());
-			name.print();
-			name.moveY(moveY);
-
-			gender.setMessage(model.getGenderName() == null ? "" : model.getGenderName());
-			gender.print();
-			gender.moveY(moveY);
-
-			age.setMessage(model.getAge() == null ? "" : model.getAge().toString());
-			age.print();
-			age.moveY(moveY);
-
-			count++;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		ofx.out();
-	}
 
-	public void printOutline(OpenFunXion ofx) {
-		ofx.print("body_block");
 	}
 
 	public List<User> getData(HttpServletRequest request) throws SQLException {
@@ -165,7 +82,6 @@ public class PrintServlet extends HttpServlet {
 			search.setAuthorityId((role == "" || role == null) ? null : Integer.parseInt(role));
 			users = UserUtils.search(conn, search);
 		} catch (SQLException e) {
-			// TODO 自動生成された catch ブロック
 			throw e;
 		} finally {
 			MyUtils.closeConnection(conn);
@@ -173,21 +89,243 @@ public class PrintServlet extends HttpServlet {
 		return users;
 	}
 
-	public Integer getTotalPage(List<User> users) {
-		int totalPage = 0;
-		Integer authorityId = users.get(0).getAuthorityId();
-		final Integer a = authorityId;
-		int countUser = (int) users.stream().filter(x -> x.getAuthorityId() == a).count();
-
-		totalPage = totalPage + (countUser / 20) + (countUser % 20 == 0 ? 0 : 1);
-		for (User u : users) {
-			if (u.getAuthorityId() != authorityId) {
-				authorityId = u.getAuthorityId();
-				final Integer check = authorityId;
-				countUser = (int) users.stream().filter(x -> x.getAuthorityId() == check).count();
-				totalPage = totalPage + (countUser / 20) + (countUser % 20 == 0 ? 0 : 1);
-			}
+	public List<Role> getRoles(HttpServletRequest request) throws SQLException {
+		List<Role> roles = null;
+		Connection conn = MyUtils.getStoredConnection(request);
+		try {
+			roles = RoleUtils.findAllRoles(conn);
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			MyUtils.closeConnection(conn);
 		}
-		return totalPage;
+		return roles;
 	}
+
+	public ResultSet getResultSetUsers(HttpServletRequest request) throws SQLException {
+		ResultSet rs = null;
+		Connection conn = MyUtils.getStoredConnection(request);
+		try {
+			User search = new User();
+			String firstName = request.getParameter("firstName");
+			String familyName = request.getParameter("familyName");
+			String role = request.getParameter("role");
+			search.setFirstName(firstName == null ? "" : firstName);
+			search.setFamilyName(familyName == null ? "" : familyName);
+			search.setAuthorityId((role == "" || role == null) ? null : Integer.parseInt(role));
+			rs = UserUtils.searchJasper(conn, search);
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			throw e;
+		} finally {
+			MyUtils.closeConnection(conn);
+		}
+		return rs;
+	}
+
+	public ResultSet getResultSetUsers(Connection conn, HttpServletRequest request, Integer roleId)
+			throws SQLException {
+		ResultSet rs = null;
+		try {
+			User search = new User();
+			String firstName = request.getParameter("firstName");
+			String familyName = request.getParameter("familyName");
+			String role = request.getParameter("role");
+			search.setFirstName(firstName == null ? "" : firstName);
+			search.setFamilyName(familyName == null ? "" : familyName);
+			search.setAuthorityId(roleId);
+			rs = UserUtils.searchJasper(conn, search);
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+
+		}
+		return rs;
+	}
+
+	private Integer getCountOfSearch(Connection conn, HttpServletRequest request, Integer roleId) throws SQLException {
+		Integer count = 0;
+		try {
+			User search = new User();
+			String firstName = request.getParameter("firstName");
+			String familyName = request.getParameter("familyName");
+			String role = request.getParameter("role");
+			search.setFirstName(firstName == null ? "" : firstName);
+			search.setFamilyName(familyName == null ? "" : familyName);
+			search.setAuthorityId(roleId);
+			count = UserUtils.getCountOfSearch(conn, search);
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+
+		}
+		return count;
+	}
+
+	//Jasper Report で帳票出力
+	public void printByJasperReport(HttpServletRequest request)
+			throws JRException, ClassNotFoundException, SQLException, FileNotFoundException {
+
+		ResultSet rs = getResultSetUsers(request);
+
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		String reportSrcFile = "C:\\Users\\phuon\\JaspersoftWorkspace\\AtomTraining\\users-report.jrxml";
+
+		JasperReport jasperReport = JasperCompileManager.compileReport(reportSrcFile);
+
+		JasperPrint print = JasperFillManager.fillReport(jasperReport,
+				parameters, new JRResultSetDataSource(rs));
+
+		// PDF Exportor.
+		JRPdfExporter exporter = new JRPdfExporter();
+
+		exporter.setExporterInput(new SimpleExporterInput(print));
+		// ExporterOutput
+		OutputStreamExporterOutput exporterOutput = new SimpleOutputStreamExporterOutput(
+				"C:\\Users\\phuon\\Desktop\\FirstJasperReport.pdf");
+
+		// Output
+		exporter.setExporterOutput(exporterOutput);
+
+		//
+		SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+		exporter.setConfiguration(configuration);
+		exporter.exportReport();
+		try {
+			Desktop.getDesktop().open(new File("C:\\Users\\phuon\\Desktop\\FirstJasperReport.pdf"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Done");
+	}
+
+	//	複数のjrxmlファイル使いの例
+	public void manyJrxmlFileExample(HttpServletRequest request)
+			throws JRException, ClassNotFoundException, SQLException, FileNotFoundException {
+
+		Connection conn = MyUtils.getStoredConnection(request);
+		String reportSrcFile = "C:\\Users\\phuon\\JaspersoftWorkspace\\AtomTraining\\";
+		List<JasperPrint> jprintlist = new ArrayList<>();
+		List<Role> roles = getRoles(request);
+		int page = 0;
+		int totalPage = 0;
+		boolean firstPage = true;
+		for (Role r : roles) {
+			String typeReport = null;
+			if (r.getAuthorityId() == 0 || r.getAuthorityId() == 1) {
+				typeReport = "users-report_type1.jrxml";
+			} else {
+				typeReport = "users-report_type2.jrxml";
+			}
+			ResultSet rs = getResultSetUsers(conn, request, r.getAuthorityId());
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			Integer count = getCountOfSearch(conn, request, r.getAuthorityId());
+
+			page = totalPage + 1;
+			parameters.put("Page", page);
+			JasperReport jasperReport = JasperCompileManager.compileReport(reportSrcFile + typeReport);
+			JasperPrint print = JasperFillManager.fillReport(jasperReport,
+					parameters, new JRResultSetDataSource(rs));
+			jprintlist.add(print);
+			totalPage += getPageCount(count);
+		}
+		MyUtils.closeConnection(conn);
+		System.out.println("total pages: " + totalPage);
+
+		File outDir = new File("C:\\Users\\phuon\\Desktop");
+		outDir.mkdirs();
+
+		JRPdfExporter exporter = new JRPdfExporter();
+
+		exporter.setExporterInput(SimpleExporterInput.getInstance(jprintlist));
+
+		OutputStreamExporterOutput exporterOutput = new SimpleOutputStreamExporterOutput(
+				"C:\\Users\\phuon\\Desktop\\FirstJasperReport.pdf");
+
+		exporter.setExporterOutput(exporterOutput);
+
+		SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+		exporter.setConfiguration(configuration);
+		exporter.exportReport();
+		try {
+			Desktop.getDesktop().open(new File("C:\\Users\\phuon\\Desktop\\FirstJasperReport.pdf"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Done");
+	}
+
+	//	サブレポートの例
+	public void subReportExample(HttpServletRequest request)
+			throws JRException, ClassNotFoundException, SQLException, FileNotFoundException {
+
+		ResultSet users = getResultSetUsers(request);
+		List<Role> roles = getRoles(request);
+		ResultSet rs = getResultSetUsers(request);
+
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		try {
+			JasperReport jrSubStudent = JasperCompileManager
+					.compileReport("C:\\Users\\phuon\\JaspersoftWorkspace\\AtomTraining\\users-report2.jrxml");
+			parameters.put("UserSubReport", jrSubStudent);
+			parameters.put("UserData", new JRResultSetDataSource(users));
+
+			JasperReport jrSubClass = JasperCompileManager
+					.compileReport("C:\\Users\\phuon\\JaspersoftWorkspace\\AtomTraining\\role-report.jrxml");
+			String reportSrcFile3 = "C:\\Users\\phuon\\JaspersoftWorkspace\\AtomTraining\\users-report3.jrxml";
+			JasperReport jasperReport3 = JasperCompileManager.compileReport(reportSrcFile3);
+			parameters.put("RoleSubReport", jrSubClass);
+			parameters.put("RoleData", new JRBeanCollectionDataSource(roles));
+			parameters.put("TestReport", jasperReport3);
+
+			JasperReport jasperReport = JasperCompileManager
+					.compileReport("C:\\Users\\phuon\\JaspersoftWorkspace\\AtomTraining\\sub-report-test.jrxml");
+
+			JasperPrint print = JasperFillManager.fillReport(jasperReport,
+					parameters, new JRResultSetDataSource(users));
+
+			JRPdfExporter exporter = new JRPdfExporter();
+
+			exporter.setExporterInput(new SimpleExporterInput(print));
+
+			OutputStreamExporterOutput exporterOutput = new SimpleOutputStreamExporterOutput(
+					"C:\\Users\\phuon\\Desktop\\FirstJasperReport.pdf");
+
+			exporter.setExporterOutput(exporterOutput);
+
+			SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+			exporter.setConfiguration(configuration);
+			exporter.exportReport();
+			try {
+				Desktop.getDesktop().open(new File("C:\\Users\\phuon\\Desktop\\FirstJasperReport.pdf"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("Done");
+	}
+
+	private Integer getPageCount(Integer size) {
+		return size / 34 + (size % 34 == 0 ? 0 : 1);
+	}
+
+	private static JasperReport loadJasperReport(String reportName) {
+		try {
+			File f = new File(reportName + ".jasper");
+			if (!f.exists()) {
+				JasperCompileManager.compileReportToFile(reportName + ".jrxml", reportName + ".jasper");
+				f = new File(reportName + ".jasper");
+			}
+			JasperReport jr = (JasperReport) JRLoader.loadObject(f);
+			return jr;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

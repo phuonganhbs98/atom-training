@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub-report-test" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1bcd9ba7-a9bc-4c04-9e9d-3a390bd235b5">
+	<parameter name="UserSubReport" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="RoleSubReport" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="UserData" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="RoleData" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="183" splitType="Stretch">
+			<subreport>
+				<reportElement x="-20" y="-20" width="595" height="200" uuid="393b5c13-03a6-479a-bcf0-db0e77e6424b"/>
+				<parametersMapExpression><![CDATA[$P{UserSubReport}]]></parametersMapExpression>
+				<dataSourceExpression><![CDATA[$P{UserData}]]></dataSourceExpression>
+			</subreport>
+		</band>
+		<band height="222">
+			<subreport>
+				<reportElement x="-20" y="11" width="595" height="200" uuid="b7c5b413-99d2-4648-bb0b-cc24f8bf203b"/>
+				<parametersMapExpression><![CDATA[$P{RoleSubReport}]]></parametersMapExpression>
+				<dataSourceExpression><![CDATA[$P{RoleData}]]></dataSourceExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

@@ -40,7 +40,8 @@
 				</tr>
 			</table>
 			<div class="flex-container search-btn-group">
-				<input type="button" onclick="myFunction(1)" class="main-btn" value="リスト"> <input
+				<input type="button" onclick="myFunction(1)" class="main-btn" value="リスト">
+				<input type="button" onclick="myFunction(2)" class="main-btn" value="リスト2"> <input
 					type="button"  class="main-btn" onclick="myFunction(0)" value="検索">
 			</div>
 		</div>
@@ -80,7 +81,11 @@
 		if(type==1){
 			document.getElementById("search-form").action = "users/print";
 			document.getElementById("search-form").target="_blank";
-		}else{
+		}else if(type ==2){
+			document.getElementById("search-form").action = "users/print2";
+			document.getElementById("search-form").target="_blank";
+		}
+		else{
 			document.getElementById("search-form").action = "users";
 			document.getElementById("search-form").target="_self";
 		}
