@@ -191,7 +191,7 @@ public class UserUtils {
 			user.setAdmin(rs.getInt("admin"));
 			result.add(user);
 		}
-		System.out.println(result);
+//		System.out.println(result);
 		return result;
 	}
 

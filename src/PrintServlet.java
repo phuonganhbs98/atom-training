@@ -56,7 +56,7 @@ public class PrintServlet extends HttpServlet {
 		try {
 			try {
 				long start = System.currentTimeMillis();
-				//				printByJasperReport(request);
+				//								printByJasperReport(request);
 				manyJrxmlFileExample(request);
 				long end = System.currentTimeMillis();
 				System.out.println("Processed in " + (end - start) + "ms");
@@ -85,6 +85,25 @@ public class PrintServlet extends HttpServlet {
 			throw e;
 		} finally {
 			MyUtils.closeConnection(conn);
+		}
+		return users;
+	}
+
+	public List<User> getData(Connection conn, HttpServletRequest request, Integer roleId) throws SQLException {
+		List<User> users = null;
+		try {
+			User search = new User();
+			String firstName = request.getParameter("firstName");
+			String familyName = request.getParameter("familyName");
+			String role = request.getParameter("role");
+			search.setFirstName(firstName == null ? "" : firstName);
+			search.setFamilyName(familyName == null ? "" : familyName);
+			search.setAuthorityId(roleId);
+			users = UserUtils.search(conn, search);
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+
 		}
 		return users;
 	}
@@ -170,12 +189,14 @@ public class PrintServlet extends HttpServlet {
 
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		String reportSrcFile = "C:\\Users\\phuon\\JaspersoftWorkspace\\AtomTraining\\users-report.jrxml";
-
+		long start1 = System.currentTimeMillis();
 		JasperReport jasperReport = JasperCompileManager.compileReport(reportSrcFile);
-
+		long end1 = System.currentTimeMillis();
 		JasperPrint print = JasperFillManager.fillReport(jasperReport,
 				parameters, new JRResultSetDataSource(rs));
-
+		long end2 = System.currentTimeMillis();
+		System.out.println("compileaaa: " + (end1 - start1) + "ms");
+		System.out.println("print: " + (end2 - end1) + "ms");
 		// PDF Exportor.
 		JRPdfExporter exporter = new JRPdfExporter();
 
@@ -199,7 +220,7 @@ public class PrintServlet extends HttpServlet {
 		System.out.println("Done");
 	}
 
-	//	複数のjrxmlファイル使いの例
+	//	複数のjrxmlファイル使いの例 - Resultset
 	public void manyJrxmlFileExample(HttpServletRequest request)
 			throws JRException, ClassNotFoundException, SQLException, FileNotFoundException {
 
@@ -210,12 +231,17 @@ public class PrintServlet extends HttpServlet {
 		int page = 0;
 		int totalPage = 0;
 		boolean firstPage = true;
+		long start1 = System.currentTimeMillis();
+		JasperReport jasperReport1 = JasperCompileManager.compileReport(reportSrcFile + "users-report_type3.jrxml");
+		JasperReport jasperReport2 = JasperCompileManager.compileReport(reportSrcFile + "users-report_type4.jrxml");
+		long end1 = System.currentTimeMillis();
+		System.out.println("compile: " + (end1 - start1) + "ms");
 		for (Role r : roles) {
-			String typeReport = null;
+			JasperReport typeReport = null;
 			if (r.getAuthorityId() == 0 || r.getAuthorityId() == 1) {
-				typeReport = "users-report_type1.jrxml";
+				typeReport = jasperReport1;
 			} else {
-				typeReport = "users-report_type2.jrxml";
+				typeReport = jasperReport2;
 			}
 			ResultSet rs = getResultSetUsers(conn, request, r.getAuthorityId());
 			Map<String, Object> parameters = new HashMap<String, Object>();
@@ -223,12 +249,12 @@ public class PrintServlet extends HttpServlet {
 
 			page = totalPage + 1;
 			parameters.put("Page", page);
-			JasperReport jasperReport = JasperCompileManager.compileReport(reportSrcFile + typeReport);
-			JasperPrint print = JasperFillManager.fillReport(jasperReport,
+			JasperPrint print = JasperFillManager.fillReport(typeReport,
 					parameters, new JRResultSetDataSource(rs));
 			jprintlist.add(print);
 			totalPage += getPageCount(count);
 		}
+
 		MyUtils.closeConnection(conn);
 		System.out.println("total pages: " + totalPage);
 
@@ -255,6 +281,65 @@ public class PrintServlet extends HttpServlet {
 
 		System.out.println("Done");
 	}
+
+	//	複数のjrxmlファイル使いの例 - CollectionBean
+	//	public void manyJrxmlFileExample(HttpServletRequest request)
+	//			throws JRException, ClassNotFoundException, SQLException, FileNotFoundException {
+	//
+	//		Connection conn = MyUtils.getStoredConnection(request);
+	//		String reportSrcFile = "C:\\Users\\phuon\\JaspersoftWorkspace\\AtomTraining\\";
+	//		List<JasperPrint> jprintlist = new ArrayList<>();
+	//		List<Role> roles = getRoles(request);
+	//		int page = 0;
+	//		int totalPage = 0;
+	//		boolean firstPage = true;
+	//		for (Role r : roles) {
+	//			String typeReport = null;
+	//			if (r.getAuthorityId() == 0 || r.getAuthorityId() == 1) {
+	//				typeReport = "users-report_type1.jrxml";
+	//			} else {
+	//				typeReport = "users-report_type2.jrxml";
+	//			}
+	////			ResultSet rs = getResultSetUsers(conn, request, r.getAuthorityId());
+	//			List<User> rs = getData(conn, request, r.getAuthorityId());
+	//			Map<String, Object> parameters = new HashMap<String, Object>();
+	////			Integer count = getCountOfSearch(conn, request, r.getAuthorityId());
+	//			Integer count = rs.size();
+	//
+	//			page = totalPage + 1;
+	//			parameters.put("Page", page);
+	//			JasperReport jasperReport = JasperCompileManager.compileReport(reportSrcFile + typeReport);
+	//			JasperPrint print = JasperFillManager.fillReport(jasperReport,
+	//					parameters, new JRBeanCollectionDataSource(rs));
+	//			jprintlist.add(print);
+	//			totalPage += getPageCount(count);
+	//		}
+	//		MyUtils.closeConnection(conn);
+	//		System.out.println("total pages: " + totalPage);
+	//
+	//		File outDir = new File("C:\\Users\\phuon\\Desktop");
+	//		outDir.mkdirs();
+	//
+	//		JRPdfExporter exporter = new JRPdfExporter();
+	//
+	//		exporter.setExporterInput(SimpleExporterInput.getInstance(jprintlist));
+	//
+	//		OutputStreamExporterOutput exporterOutput = new SimpleOutputStreamExporterOutput(
+	//				"C:\\Users\\phuon\\Desktop\\FirstJasperReport.pdf");
+	//
+	//		exporter.setExporterOutput(exporterOutput);
+	//
+	//		SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+	//		exporter.setConfiguration(configuration);
+	//		exporter.exportReport();
+	//		try {
+	//			Desktop.getDesktop().open(new File("C:\\Users\\phuon\\Desktop\\FirstJasperReport.pdf"));
+	//		} catch (IOException e) {
+	//			e.printStackTrace();
+	//		}
+	//
+	//		System.out.println("Done");
+	//	}
 
 	//	サブレポートの例
 	public void subReportExample(HttpServletRequest request)

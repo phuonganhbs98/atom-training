@@ -58,6 +58,7 @@ public class PrintServlet3 extends HttpServlet {
 		int countPage = getTotalPage(dataAll);
 		boolean isFirst = true;
 		Integer pageNo = 0;
+		long start1 = System.currentTimeMillis();
 		for (Role r : roles) {
 			if (r.getAuthorityId() == 0 || r.getAuthorityId() == 1) {
 				if (!isFirst) {
@@ -143,7 +144,8 @@ public class PrintServlet3 extends HttpServlet {
 			}
 
 		}
-
+		long end1 = System.currentTimeMillis();
+		System.out.println("Processed in " + (end1 - start1) + "ms");
 		ofx.out();
 	}
 
