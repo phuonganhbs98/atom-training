@@ -33,11 +33,10 @@ public class PrintServlet3 extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		long startTime = System.currentTimeMillis();
 		OpenFunXion ofx = null;
 
 		try {
-			ofx = new OpenFunXion("/Users/phuon/Desktop/atom-training/template1.xml");
+			ofx = new OpenFunXion(XML_FILE+"template1.xml");
 			ofx.open(response);
 			makePdf(ofx, request);
 
@@ -45,20 +44,17 @@ public class PrintServlet3 extends HttpServlet {
 			e.printStackTrace();
 			return;
 		}
-		long endTime = System.currentTimeMillis();
-		System.out.println("Processed in " + (endTime - startTime) + "ms");
 	}
 
 	private void makePdf(OpenFunXion ofx, HttpServletRequest request) throws SQLException {
-		String template1 = "/Users/phuon/Desktop/atom-training/template1.xml";
-		String template2 = "/Users/phuon/Desktop/atom-training/template2.xml";
+		String template1 = XML_FILE+"template1.xml";
+		String template2 = XML_FILE+"template2.xml";
 		Connection conn = MyUtils.getStoredConnection(request);
 		List<User> dataAll = getData(request);
 		List<Role> roles = getRoles(conn, request);
 		int countPage = getTotalPage(dataAll);
 		boolean isFirst = true;
 		Integer pageNo = 0;
-		long start1 = System.currentTimeMillis();
 		for (Role r : roles) {
 			if (r.getAuthorityId() == 0 || r.getAuthorityId() == 1) {
 				if (!isFirst) {
@@ -144,8 +140,6 @@ public class PrintServlet3 extends HttpServlet {
 			}
 
 		}
-		long end1 = System.currentTimeMillis();
-		System.out.println("Processed in " + (end1 - start1) + "ms");
 		ofx.out();
 	}
 
